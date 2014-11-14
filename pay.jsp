@@ -51,7 +51,7 @@
 			<td width="13%" align="center"><b>ราคารวม</b></td>
 		</tr>
 		<%
-			while (enu.hasMoreElements()) {////1
+			while (enu.hasMoreElements()) {
 						temp = (String[]) enu.nextElement();
 						quantity = Integer.parseInt(temp[2]);
 						price = Float.parseFloat(temp[3]);
@@ -77,7 +77,7 @@
 			<td align="center"><%=price%></td>
 		</tr>
 		<%
-			}////1
+			}
 		%>
 		<tr>
 			<td colspan="3">&nbsp;</td>
