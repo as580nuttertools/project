@@ -16,11 +16,11 @@
 		stmt.executeUpdate(sql);
 		response.sendRedirect("admin_data_orders.jsp");
 	} else {
-%>
+%><br>
 <form method="post" action="chang_status.jsp">
 	<table width="40%" border="1" align="center" cellspacing="0"
-		bordercolor="black">
-		<tr>
+		bordercolor="black" bgcolor="#E1EEEE">
+		<tr bgcolor="#79CDCD">
 			<th scope="col">เปลี่ยนสถานะการสั่งซื้อ</th>
 		</tr>
 		<tr>
