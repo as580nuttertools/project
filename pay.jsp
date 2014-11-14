@@ -14,7 +14,8 @@
 <%
 	} else {
 		String[] temp;
-		float sum = 0;
+		float price = 0;
+		int quantity = 0;
 		float amount = 0;
 		Class.forName(driver);
 		Connection con = DriverManager.getConnection(url, user, pw);
@@ -22,6 +23,7 @@
 		String sql = "";
 		ResultSet rs = null;
 		if (request.getParameter("buy") != null) {
+			response.sendRedirect("product.jsp");
 		}
 		//ถ้าคลิกปุ่ม "ตกลง" ตรวจสอบว่าเลือกชำระเงินประเภทใด
 		if (request.getParameter("ok") != null) {
@@ -49,22 +51,33 @@
 			<td width="13%" align="center"><b>ราคารวม</b></td>
 		</tr>
 		<%
-			while (enu.hasMoreElements()) {
+			while (enu.hasMoreElements()) {////1
 						temp = (String[]) enu.nextElement();
-						sum = Integer.parseInt(temp[2])
-								* Float.parseFloat(temp[3]);
-						amount += sum;
+						quantity = Integer.parseInt(temp[2]);
+						price = Float.parseFloat(temp[3]);
+						if (quantity < 1) {
+		%>
+		<script>
+			if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
+				location = "view_cart.jsp";
+			}
+			location = "view_cart.jsp";
+		</script>
+		<%
+			}
+						price = price * quantity;
+						amount += price;
 		%>
 		<tr>
 			<td align="center"><%=temp[0]%></td>
 			<td><%=new String(temp[1].getBytes("ISO8859_1"),
 								"windows-874")%></td>
-			<td align="center"><%=temp[2]%></td>
+			<td align="center"><%=quantity%></td>
 			<td align="center"><%=temp[3]%></td>
-			<td align="center"><%=sum%></td>
+			<td align="center"><%=price%></td>
 		</tr>
 		<%
-			}
+			}////1
 		%>
 		<tr>
 			<td colspan="3">&nbsp;</td>
