@@ -20,7 +20,7 @@
 	//ตรวจสอบว่ามีการส่งข้อมูลแบบ multipart/form-data หรือไม่
 	if (MultipartFormDataRequest.isMultipartFormData(request)) {
 		MultipartFormDataRequest mrequest = new MultipartFormDataRequest(
-				request);
+		request);
 		String isbn = mrequest.getParameter("isbn");
 		String title = mrequest.getParameter("title");
 		String author = mrequest.getParameter("author");
@@ -29,6 +29,7 @@
 		String publisher = mrequest.getParameter("publisher");
 		String time = mrequest.getParameter("time");
 		String price = mrequest.getParameter("price");
+		String quantity = mrequest.getParameter("quantity");
 		String description = mrequest.getParameter("description");
 		String filetype = "";
 		String image = "";
@@ -36,60 +37,70 @@
 		//ตรวจสอบข้อผิดพลาดต่างๆ จากค่าที่ส่งมาจากฟอร์ม ถ้ามีข้อผิดพลาดให้เพิ่มไว้ใน errors
 
 		if (isbn.equals("")) {
-			errors.add("กรุณากรอกรหัสISBN");
+	errors.add("กรุณากรอกรหัสISBN");
 		}
 		if (title.equals("")) {
-			errors.add("กรุณากรอกชื่อหนังสือ");
+	errors.add("กรุณากรอกชื่อหนังสือ");
 		}
 		if (author.equals("")) {
-			errors.add("กรุณากรอกชื่อผู้แต่ง");
+	errors.add("กรุณากรอกชื่อผู้แต่ง");
 		}
 		if (bt_id.equals("0")) {
-			errors.add("กรุณาเลือกประเภทหนังสือ");
+	errors.add("กรุณาเลือกประเภทหนังสือ");
 		}
 		if (n_page.equals("")) {
-			errors.add("กรุณากรอกจำนวนหน้า");
+	errors.add("กรุณากรอกจำนวนหน้า");
 		}
 		if (!n_page.equals("")) {
-			if (!isNumeric(n_page)) {
-				errors.add("กรุณากรอกจำนวนหน้าที่เป็นตัวเลขเท่านั้น");
-			}
+	if (!isNumeric(n_page)) {
+		errors.add("กรุณากรอกจำนวนหน้าที่เป็นตัวเลขเท่านั้น");
+	}
 		}
 		if (publisher.equals("")) {
-			errors.add("กรุณากรอกสำนักพิมพ์");
+	errors.add("กรุณากรอกสำนักพิมพ์");
 		}
 		if (time.equals("")) {
-			errors.add("กรุณากรอกจัดพิมพ์ครั้งที่");
+	errors.add("กรุณากรอกจัดพิมพ์ครั้งที่");
 		}
 		if (!time.equals("")) {
-			if (!isNumeric(time)) {
-				errors.add("กรุณากรอกครั้งที่พิมพ์ที่เป็นตัวเลขเท่านั้น");
-			}
+	if (!isNumeric(time)) {
+		errors.add("กรุณากรอกครั้งที่พิมพ์ที่เป็นตัวเลขเท่านั้น");
+	}
 		}
 		if (price.equals("")) {
-			errors.add("กรุณากรอกราคา");
+	errors.add("กรุณากรอกราคา");
 		}
 		if (!price.equals("")) {
-			if (!isNumeric(price)) {
-				errors.add("กรุณากรอกราคาที่เป็นตัวเลขเท่านั้น");
-			}
+	if (!isNumeric(price)) {
+		errors.add("กรุณากรอกราคาที่เป็นตัวเลขเท่านั้น");
+	}
+		}
+		if (quantity.equals("")) {
+	errors.add("กรุณากรอกจำนวน");
+		}
+		if (!quantity.equals("")) {
+	if (!isNumeric(quantity)) {
+		errors.add("กรุณากรอกจำนวนที่เป็นตัวเลขเท่านั้น");
+	}
 		}
 		if (description.equals("")) {
-			errors.add("กรุณากรอกรายละเอียด");
+	errors.add("กรุณากรอกรายละเอียด");
 		}
 
 		//ตรวจสอบค่าจาก file field
 		Hashtable files = mrequest.getFiles();
 		UploadFile file = (UploadFile) files.get("upload");
 		if (file.getData() != null) {
-			String filename = file.getFileName().toLowerCase();
-			filetype = filename.substring(filename.lastIndexOf("."),
-					filename.length());
-			if ((filetype.indexOf("gif") == -1)
-					&& (filetype.indexOf("jpeg") == -1)
-					&& (filetype.indexOf("jpg") == -1)) {
-				errors.add("ตรวจสอบชนิดไฟล์รูปภาพ");
-			}
+	String filename = file.getFileName().toLowerCase();
+	filetype = filename.substring(filename.lastIndexOf("."),
+			filename.length());
+	if ((filetype.indexOf("gif") == -1)
+			&& (filetype.indexOf("jpeg") == -1)
+			&& (filetype.indexOf("jpg") == -1)) {
+		errors.add("ตรวจสอบชนิดไฟล์รูปภาพ");
+	}
+		} else {
+			errors.add("กรุณาเลือกรูปภาพ");
 		}
 		//ตรวจสอบว่ามีข้อผิดพลาดหรือไม่ ถ้ามีให้แสดงข้อผิดพลาดออกมา
 		if (errors.size() > 0) {
@@ -97,7 +108,7 @@
 <%
 	} else {
 			//เพิ่มข่าวลงในตาราง book
-			sql = "insert into book (bt_id,isbn,author,title,price,description,image,publisher,time,n_page) VALUES ('"
+			sql = "insert into book (bt_id,isbn,author,title,price,quantity,description,image,publisher,time,n_page) VALUES ('"
 					+ isbn
 					+ "','"
 					+ bt_id
@@ -107,6 +118,8 @@
 					+ title
 					+ "','"
 					+ price
+					+ "','"
+					+ quantity
 					+ "','"
 					+ description
 					+ "','"
@@ -188,6 +201,10 @@
 		<tr>
 			<td><b>ราคา</b></td>
 			<td><input name="price" type="text" size="10">บาท</td>
+		</tr>
+		<tr>
+			<td><b>จำนวน</b></td>
+			<td><input name="quantity" type="text" size="5" maxlength="5">เล่ม</td>
 		</tr>
 		<tr>
 			<td><b>รายละเอียด</b></td>
