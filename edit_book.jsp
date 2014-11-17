@@ -19,7 +19,7 @@
 	ResultSet rs = null;
 	Vector errors = new Vector();
 	String b_id = request.getParameter("b_id");
-	String isbn = "", title = "", author = "", bt_id = "", n_page = "", publisher = "", time = "", price = "", description = "", filetype = "", image = "";
+	String isbn = "", title = "", author = "", bt_id = "", n_page = "", publisher = "", time = "", price = "", quantity = "", description = "", filetype = "", image = "";
 	sql = "select * from book where b_id=" + b_id;
 	rs = stmt.executeQuery(sql);
 	while (rs.next()) {
@@ -34,6 +34,7 @@
 				"ISO8859_1"), "windows-874");
 		time = rs.getString("time");
 		price = rs.getString("price");
+		quantity = rs.getString("quantity");
 		image = rs.getString("image");
 		description = new String(rs.getString("description").getBytes(
 				"ISO8859_1"), "windows-874");
@@ -51,6 +52,7 @@
 		publisher = mrequest.getParameter("publisher");
 		time = mrequest.getParameter("time");
 		price = mrequest.getParameter("price");
+		quantity = mrequest.getParameter("quantity");
 		description = mrequest.getParameter("description");
 		//ตรวจสอบข้อผิดพลาดต่างๆ จากค่าที่ส่งมาจากฟอร์ม ถ้ามีข้อผิดพลาดให้เพิ่มไว้ใน errors
 
@@ -93,6 +95,14 @@
 				errors.add("กรุณากรอกราคาที่เป็นตัวเลขเท่านั้น");
 			}
 		}
+		if (quantity.equals("")) {
+			errors.add("กรุณากรอกจำนวน");
+		}
+		if (!quantity.equals("")) {
+			if (!isNumeric(quantity)) {
+				errors.add("กรุณากรอกจำนวนที่เป็นตัวเลขเท่านั้น");
+			}
+		}
 		if (description.equals("")) {
 			errors.add("กรุณากรอกรายละเอียด");
 		}
@@ -110,6 +120,8 @@
 				errors.add("ตรวจสอบชนิดไฟล์รูปภาพ");
 			}
 			image = b_id + filetype;
+		} else {
+			errors.add("กรุณาเลือกรูปภาพ");
 		}
 		//ตรวจสอบว่ามีข้อผิดพลาดหรือไม่ ถ้ามีให้แสดงข้อผิดพลาดออกมา
 		if (errors.size() > 0) {
@@ -118,19 +130,25 @@
 	} else {
 			//แก้ไขข่าวในตาราง news
 			if (file.getData() != null) {
-		sql = "update book set  bt_id='" + bt_id + "',isbn='"
-				+ isbn + "',author='" + author + "',title='"
-				+ title + "',price='" + price
-				+ "',description='" + description + "',image='default.jpg',time='" + time + "',n_page='"
-				+ n_page + "' where b_id=" + b_id;
+				sql = "update book set  bt_id='" + bt_id + "',isbn='"
+						+ isbn + "',author='" + author + "',title='"
+						+ title + "',price='" + price
+						+ "',description='" + description
+						+ "',image='default.jpg',time='" + time
+						+ "',n_page='" + n_page + "' where b_id="
+						+ b_id;
 				//ถ้ามีการ upload ให้กำหนดชื่อรูปที่ upload แล้วทำการ upload file
 				file.setFileName(b_id + filetype);
 				up.store(mrequest, "upload");
 			} else {
 				sql = "update book set  bt_id='" + bt_id + "',isbn='"
-						+ isbn + "',author='" + author + "',title='"
-						+ title + "',price='" + price
-						+ "',description='" + description + "',time='"
+						+ isbn 
+						+ "',author='" + author 
+						+ "',title='" + title 
+						+ "',price='" + price 
+						+ "',quantity='" + quantity
+						+ "',description='" + description 
+						+ "',time='"
 						+ time + "',n_page='" + n_page
 						+ "' where b_id=" + b_id;
 			}
@@ -201,6 +219,11 @@
 			<td><b>ราคา</b></td>
 			<td><input name="price" type="text" value="<%=price%>" size="10">
 				<b>บาท </td>
+		</tr>
+		<tr>
+			<td><b>จำนวน</b></td>
+			<td><input name="quantity" value="<%=price%>" type="text"
+				size="5" maxlength="5">เล่ม</td>
 		</tr>
 		<tr>
 			<td><b>รายละเอียด</b></td>
