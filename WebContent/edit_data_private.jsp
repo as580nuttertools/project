@@ -1,7 +1,7 @@
 <%@ include file="ck_session_customer.jsp"%>
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.*"%>
-<%@ include file="header_user.jsp"%>
+<%@ include file="header.jsp"%>
 <%@ include file="config.jsp"%>
 <%@ include file="m_Numeric.jsp"%>
 <%
@@ -34,7 +34,7 @@
 %><%@ include file="ckError.jsp"%>
 <%
 	} else {
-			sql = "update customer set email='" + email + "',fname='"
+			sql = "update user set email='" + email + "',fname='"
 					+ fname + "',lname='" + lname + "',tel='" + tel
 					+ "' where username='"
 					+ session.getAttribute("j_username") + "'";
@@ -47,7 +47,7 @@
 <%
 	}
 	} else {
-		sql = "select * from customer where username='"
+		sql = "select * from user where username='"
 				+ session.getAttribute("j_username") + "'";
 		rs = stmt.executeQuery(sql);
 		rs.next();
