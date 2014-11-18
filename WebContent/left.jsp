@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=windows-874"%>
 <%
-	if ((session.getAttribute("j_username") != null)
-			&& (session.getAttribute("status").equals("customer"))) {
+	if ((session.getAttribute("j_username") != null)) {
 %>
 <jsp:include page="form_customer_logout.jsp" />
 <%
