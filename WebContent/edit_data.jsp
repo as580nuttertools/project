@@ -1,6 +1,6 @@
-<%@ include file="ck_session_customer.jsp"%>
+
 <%@ page contentType="text/html; charset=windows-874"%>
-<%@ include file="header_user.jsp"%>
+<%@ include file="header.jsp"%>
 <br>
 <table width="50%" align="center" cellspacing="0">
 	<tr bgcolor="#ECE9D8">
@@ -25,6 +25,6 @@
 	<tr bgcolor="#ECE9D8">
 		<td colspan="2"><a href="edit_data_private.jsp">
 				แก้ไขข้อมูลส่วนตัว</a> | <a href="edit_data_login.jsp">แก้ไขรหัสผ่าน</a>
-			| <a href="edit_data_address.jsp?pay=no">แก้ไขที่อยู่ในการส่งสินค้า</a></td>
+			| <a href="edit_data_address.jsp?pay=no">แก้ไขที่อยู่</a></td>
 	</tr>
 </table>
