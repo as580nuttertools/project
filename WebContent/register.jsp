@@ -23,9 +23,10 @@
 		String province = request.getParameter("province");
 		String city = request.getParameter("city");
 		String zip = request.getParameter("zip");
+		String status = request.getParameter("status");
 
 		//ตรวจสอบว่าชื่อ username ซ้ำหรือไม่
-		sql = "select username from customer where username='"
+		sql = "select username from user where username='"
 				+ username + "'";
 		rs = stmt.executeQuery(sql);
 		if (rs.next()) {
@@ -59,7 +60,7 @@
 			}
 		}
 		//ตรวจสอบว่าชื่อ username ซ้ำหรือไม่
-		sql = "select username from customer where email='" + email
+		sql = "select username from user where email='" + email
 				+ "'";
 		rs = stmt.executeQuery(sql);
 		if (rs.next()) {
@@ -109,7 +110,7 @@
 <%@ include file="ckError.jsp"%>
 <%
 	} else {
-			sql = "insert into customer (username,password,email,fname,lname,tel,address,province,city,zip) VALUES ('"
+			sql = "insert into user (username,password,email,fname,lname,tel,address,province,city,zip,status) VALUES ('"
 					+ username
 					+ "','"
 					+ password
@@ -127,7 +128,9 @@
 					+ province
 					+ "','"
 					+ city
-					+ "','" + zip + "') ";
+					+ "','"
+					+ zip
+					+ "','customer') ";
 
 			int row = stmt.executeUpdate(sql);
 			if (row != 0) {
@@ -214,5 +217,6 @@
 </form>
 <%
 	}
+	con.close();
 %>
 <%@ include file="footer.jsp"%>
