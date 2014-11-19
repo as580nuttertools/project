@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.*"%>
 <%@ include file="config.jsp"%>
-<%@ include file="header_admin.jsp"%>
+<%@ include file="header.jsp"%>
 <%
 	String bt_id = request.getParameter("bt_id");
 	Vector errors = new Vector();
@@ -24,7 +24,9 @@
 	} else {
 			sql = "delete from booktype where bt_id='" + bt_id + "'";
 			stmt.executeUpdate(sql);
-			response.sendRedirect("book_list.jsp");
+			rs.close();
+			con.close();
+			response.sendRedirect("book_type_list_menu.jsp");
 		}
 	}
 %>
