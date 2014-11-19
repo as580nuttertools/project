@@ -1,7 +1,7 @@
 <%@ include file="ck_session_admin.jsp"%>
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.*"%>
-<%@ include file="header_admin.jsp"%>
+<%@ include file="header.jsp"%>
 <%
 	String bt_id = request.getParameter("bt_id");
 	String name = "", old_name = "";
@@ -41,7 +41,9 @@
 					+ "' where bt_id='" + bt_id + "'";
 			int row = stmt.executeUpdate(sql);
 			if (row != 0) {
-				response.sendRedirect("book_list.jsp");
+				rs.close();
+				con.close();
+				response.sendRedirect("book_type_list_menu.jsp");
 			}
 		}
 	} else {
