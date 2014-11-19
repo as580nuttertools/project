@@ -56,8 +56,16 @@
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
-		<td colspan="2"><a
-			href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>" class="button">หยิบใส่ตะกร้า</a></td>
+		<td colspan="2">
+				<%
+					if (session.getAttribute("j_fname") != null) {
+								if (session.getAttribute("status").equals("customer")) {
+				%> <a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>"
+				class=Button>หยิบใส่รถเข็น</a> <%
+ 	}
+ 			}
+ %>
+			</td>
 	</tr>
 </table>
 <%
