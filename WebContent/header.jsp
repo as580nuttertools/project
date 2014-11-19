@@ -62,8 +62,7 @@ a.Button:hover {
 									if (session.getAttribute("j_fname") == null) {
 								%>
 								<a href="register.jsp" class=Button>สมัครสมาชิก</a> <a
-									href="product.jsp" class=Button>รายการหนังสือ</a> <a
-									href="view_cart.jsp" class=Button>รถเข็น</a>
+									href="product.jsp" class=Button>รายการหนังสือ</a>
 								<%
 									}
 								%>
