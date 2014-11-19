@@ -1,7 +1,7 @@
 <%@ include file="ck_session_admin.jsp"%>
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.*,javazoom.upload.*"%>
-<%@ include file="header_admin.jsp"%>
+<%@ include file="header.jsp"%>
 <%@ include file="config.jsp"%>
 <%@ include file="m_Numeric.jsp"%>
 <%
@@ -146,7 +146,7 @@
 			//เปลี่ยนชื่อรูปที่ upload แล้วทำการ upload file
 			file.setFileName(image);
 			up.store(mrequest, "upload");
-			response.sendRedirect("book_list.jsp");
+			response.sendRedirect("book_list_menu.jsp");
 		}
 	} else {
 %><br>
