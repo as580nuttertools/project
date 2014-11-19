@@ -9,12 +9,6 @@
 		Statement stmt = con.createStatement();
 		String sql;
 		ResultSet rs = null;
-		if (request.getParameter("add_book") != null) {
-			response.sendRedirect("add_book.jsp");
-		}
-		if (request.getParameter("add_btype") != null) {
-			response.sendRedirect("add_btype.jsp");
-		}
 	%><br>
 	<table width="85%" border="1" align="center" bordercolor="black"
 		cellspacing="0" bgcolor="#79CDCD">
@@ -54,8 +48,8 @@
 				con.close();
 			%>
 			<tr>
-				<td colspan="3" align="center"><input name="add_btype"
-					type="submit" value="เพิ่มประเภทหนังสือ"></td>
+				<td colspan="3" align="center"><a href="add_btype.jsp"
+					class="button">เพิ่มประเภทหนังสือ</a></td>
 			</tr>
 		</table>
 	</form>
