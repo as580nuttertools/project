@@ -1,3 +1,4 @@
+<%@ include file="ck_session_admin.jsp"%>
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*"%>
 <%@ include file="config.jsp"%>
@@ -53,7 +54,7 @@
 		int totalRow = 0;
 		//หาจำนวนหนังสือ
 		sql = "select  count(*) as totalRow from book WHERE title like '%"
-				+ keyword + "%' or author like '%" + keyword + "%'";
+				+ keyword + "%' or isbn like '%" + keyword + "%'";
 		rs = stmt.executeQuery(sql);
 		while (rs.next()) {
 			totalRow = rs.getInt("totalRow");
@@ -64,7 +65,7 @@
 		pa.actionPage(action, 5);
 		// แสดงหนังสือตามค่าที่กำหนด
 		sql = "SELECT * FROM book WHERE title like '%" + keyword
-				+ "%' or author like '%" + keyword + "%'";
+				+ "%' or isbn like '%" + keyword + "%'";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
@@ -72,6 +73,7 @@
 <table width="60%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
 	<tr bgcolor="#79CDCD">
+		<td align="center"><span style="font-weight: bold">ISBN</span></td>
 		<td align="center"><span style="font-weight: bold">ชื่อหนังสือ</span></td>
 		<td width="10%" align="center"><span style="font-weight: bold">จำนวน</span></td>
 		<td width="10%" align="center"><span style="font-weight: bold">แก้ไข</span></td>
@@ -82,6 +84,7 @@
 		do {
 	%>
 	<tr>
+		<td align="center"><%=rs.getString("isbn")%></td>
 		<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
 		<td align="center"><%=rs.getString("quantity")%></td>
@@ -94,9 +97,9 @@
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
 	<tr>
-		<td colspan="4"><br></td>
+		<td colspan="5"><br></td>
 	</tr>
-	<td colspan="4" align="center"><a href="add_book.jsp"
+	<td colspan="5" align="center"><a href="add_book.jsp"
 		class="button">เพิ่มหนังสือ</a>
 	</tr>
 
