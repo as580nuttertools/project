@@ -93,17 +93,24 @@
 			<td>&nbsp;</td>
 			<td><a href="product_detail.jsp?b_id=<%=rs.getString("b_id")%>"
 				class=Button>รายละเอียด</a></td>
-			<td><a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>"
-				class=Button>หยิบใส่รถเข็น</a></td>
+			<td>
+				<%
+					if (session.getAttribute("j_fname") != null) {
+								if (session.getAttribute("status").equals("customer")) {
+				%> <a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>"
+				class=Button>หยิบใส่รถเข็น</a> <%
+ 	}
+ 			}
+ %>
+			</td>
 		</tr>
 	</table>
 	<br>
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
+			rs.close();
+			con.close();
 	%>
-</table>
-<table width="75%" align="center" cellpadding="0" cellspacing="0">
-	<tr bgcolor="#ECE9D8">
 </table>
 <%
 	} catch (Exception e) {
