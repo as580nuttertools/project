@@ -76,5 +76,7 @@
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+	rs.close();
+	con.close();
 	%>
 </table>
