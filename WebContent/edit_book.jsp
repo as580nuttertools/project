@@ -1,7 +1,7 @@
 <%@ include file="ck_session_admin.jsp"%>
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.*,javazoom.upload.*"%>
-<%@ include file="header_admin.jsp"%>
+<%@ include file="header.jsp"%>
 <%@ include file="config.jsp"%>
 <%@ include file="m_Numeric.jsp"%>
 <%
@@ -119,9 +119,7 @@
 					&& (filetype.indexOf("jpg") == -1)) {
 				errors.add("ตรวจสอบชนิดไฟล์รูปภาพ");
 			}
-			image = b_id + filetype;
-		} else {
-			errors.add("กรุณาเลือกรูปภาพ");
+			image = filename;
 		}
 		//ตรวจสอบว่ามีข้อผิดพลาดหรือไม่ ถ้ามีให้แสดงข้อผิดพลาดออกมา
 		if (errors.size() > 0) {
@@ -133,28 +131,23 @@
 				sql = "update book set  bt_id='" + bt_id + "',isbn='"
 						+ isbn + "',author='" + author + "',title='"
 						+ title + "',price='" + price
-						+ "',description='" + description
-						+ "',image='default.jpg',time='" + time
-						+ "',n_page='" + n_page + "' where b_id="
-						+ b_id;
+						+ "',description='" + description + "',image='"
+						+ image + "',time='" + time + "',n_page='"
+						+ n_page + "' where b_id=" + b_id;
 				//ถ้ามีการ upload ให้กำหนดชื่อรูปที่ upload แล้วทำการ upload file
-				file.setFileName(b_id + filetype);
+				file.setFileName(image + filetype);
 				up.store(mrequest, "upload");
 			} else {
 				sql = "update book set  bt_id='" + bt_id + "',isbn='"
-						+ isbn 
-						+ "',author='" + author 
-						+ "',title='" + title 
-						+ "',price='" + price 
-						+ "',quantity='" + quantity
-						+ "',description='" + description 
-						+ "',time='"
-						+ time + "',n_page='" + n_page
+						+ isbn + "',author='" + author + "',title='"
+						+ title + "',price='" + price + "',quantity='"
+						+ quantity + "',description='" + description
+						+ "',time='" + time + "',n_page='" + n_page
 						+ "' where b_id=" + b_id;
 			}
 			int row = stmt.executeUpdate(sql);
 			if (row != 0) {
-				response.sendRedirect("book_list.jsp");
+				response.sendRedirect("book_list_menu.jsp");
 			}
 		}
 	} else {
@@ -232,7 +225,7 @@
 		</tr>
 		<tr>
 			<td><b>ไฟล์รูปภาพ[jpg,gif]</b></td>
-			<td><input name="upload" type="file"><b>ว่างไว้ถ้าไม่ต้องการแก้ไข</b></td>
+			<td><input name="upload" type="file" value="<%=image%>"><b>ว่างไว้ถ้าไม่ต้องการแก้ไข</b></td>
 		</tr>
 		<tr>
 			<td colspan="2"><div align="center">
