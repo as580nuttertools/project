@@ -133,8 +133,7 @@
 </form>
 <%
 	} catch (Exception e) {
-		out.println(e.getMessage());
-		e.printStackTrace();
+		out.println("ไม่มีหนังสือ");
 	}
 	rs.close();
 	con.close();
