@@ -82,7 +82,8 @@ a.Button:hover {
 										if (session.getAttribute("status").equals("admin")) {
 								%>
 								<a href="admin_data_orders_menu.jsp" class=Button>รายการสั่งซื้อ</a>
-								<a href="book_list.jsp" class=Button> รายการหนังสือ</a>
+								<a href="book_type_list_menu.jsp" class=Button>ประเภทหนังสือ</a>
+								<a href="book_list_menu.jsp" class=Button>รายการหนังสือ</a>
 								<%
 									}
 									}
