@@ -50,6 +50,8 @@
 			</tr>
 			<%
 				}
+				rs.close();
+				con.close();
 			%>
 			<tr>
 				<td colspan="3" align="center"><input name="add_btype"
