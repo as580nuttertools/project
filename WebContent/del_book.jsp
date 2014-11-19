@@ -11,5 +11,5 @@
 		String sql = "delete from book where b_id='" + b_id + "'";
 		stmt.executeUpdate(sql);
 	}
-	response.sendRedirect("book_list.jsp");
+	response.sendRedirect("book_list_menu.jsp");
 %>
