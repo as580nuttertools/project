@@ -67,6 +67,7 @@
 				+ "%' or author like '%" + keyword + "%'";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
+		con.close();
 		do {
 %>
 <table width="60%" align="center" bgcolor="#E1EEEE">
@@ -99,8 +100,16 @@
 		<td>&nbsp;</td>
 		<td><a href="product_detail.jsp?b_id=<%=rs.getString("b_id")%>"
 			class=Button>รายละเอียด</a></td>
-		<td><a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>"
-			class=Button>หยิบใส่รถเข็น</a></td>
+		<td>
+				<%
+					if (session.getAttribute("j_fname") != null) {
+								if (session.getAttribute("status").equals("customer")) {
+				%> <a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>"
+				class=Button>หยิบใส่รถเข็น</a> <%
+ 	}
+ 			}
+ %>
+			</td>
 	</tr>
 </table>
 <br>
