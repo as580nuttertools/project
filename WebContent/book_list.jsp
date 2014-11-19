@@ -133,4 +133,6 @@
 		out.println(e.getMessage());
 		e.printStackTrace();
 	}
+	rs.close();
+	con.close();
 %>
