@@ -96,14 +96,6 @@
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
-	<tr>
-		<td colspan="5"><br></td>
-	</tr>
-	<td colspan="5" align="center"><a href="add_book.jsp"
-		class="button">เพิ่มหนังสือ</a>
-	</tr>
-
-
 </table>
 <br>
 <form name="form1" method="post"
