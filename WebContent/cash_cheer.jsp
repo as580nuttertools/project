@@ -88,8 +88,9 @@
 		<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
 		<td align="center"><%=rs.getString("quantity")%></td>
-		<td align="center"><a href="add_to_cash_cheer.jsp?b_id=<%=rs.getString("b_id")%>"
-				class=Button>ซื้อ</a></td>
+		<td align="center"><a
+			href="add_to_cash_cheer.jsp?b_id=<%=rs.getString("b_id")%>"
+			class=Button>ซื้อ</a></td>
 	</tr>
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
@@ -122,7 +123,10 @@
 </form>
 <%
 	} catch (Exception e) {
-		out.println("ไม่มีหนังสือ");
+	out.println("ไม่มีหนังสือ");
+	%>
+	</table>
+	<%
 	}
 	rs.close();
 	con.close();
@@ -137,10 +141,7 @@
 		}
 	}
 	if (request.getParameter("pay") != null) {
-		response.sendRedirect("pay.jsp");
-	}
-	if (request.getParameter("buy") != null) {
-		response.sendRedirect("product.jsp");
+		response.sendRedirect("pay_cash_cheer.jsp");
 	}
 	if (request.getParameter("del") != null) {
 		String[] b_id = request.getParameterValues("b_id");
@@ -171,7 +172,7 @@
 				//นำหนังสือที่อยู่ใน bean ออกมาแสดง
 				while (enu.hasMoreElements()) {
 					temp = (String[]) enu.nextElement();
-					
+
 					Class.forName(driver);
 					con = DriverManager.getConnection(url, user, pw);
 					stmt = con.createStatement();
@@ -195,7 +196,8 @@
 		%>
 		<script>
 								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
-									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ซึ่งไม่เพียงพอในการขาย")) {
+									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%>
+			เล่ม ซึ่งไม่เพียงพอในการขาย")) {
 			}
 		</script>
 		<%
@@ -212,14 +214,14 @@
 			<td align="center"><%=rs.getString("quantity")%></td>
 			<td><input name="<%=temp[0]%>" type="text" value="<%=temp[2]%>"
 				size="3" maxlength="3"><a
-				href="add_to_cart.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
-				href="reduce_to_car.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
+				href="add_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
+				href="reduce_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
 			<td align="center"><%=temp[3]%></td>
 			<td align="center"><%=sum%></td>
 		</tr>
 		<%
-					}
 			}
+				}
 		%>
 		<tr>
 			<td colspan="3"><input name="del" type="submit"
