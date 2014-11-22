@@ -66,7 +66,7 @@
 		pa.actionPage(action, 5);
 		// แสดงหนังสือตามค่าที่กำหนด
 		sql = "SELECT * FROM book WHERE title like '%" + keyword
-				+ "%' or isbn like '%" + keyword + "%'";
+				+ "%' or isbn like '%" + keyword + "%' order by isbn";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
@@ -125,7 +125,7 @@
 		out.println("ไม่มีหนังสือ");
 	}
 	rs.close();
-	con.close();////////////////////////////////////////////////////////////////////
+	con.close();
 %>
 <%
 	String[] temp;
@@ -160,6 +160,7 @@
 			<td width="15%" align="center"><b>รหัสหนังสือ</b></td>
 			<td width="40%" align="center"><b>ชื่อหนังสือ</b></td>
 			<td width="15%" align="center"><b>จำนวน</b></td>
+			<td width="15%" align="center"><b>จำนวน</b></td>
 			<td width="15%" align="center"><b>ราคา/หน่วย</b></td>
 			<td width="20%" align="center"><b>ราคารวม</b></td>
 		</tr>
@@ -170,35 +171,65 @@
 				//นำหนังสือที่อยู่ใน bean ออกมาแสดง
 				while (enu.hasMoreElements()) {
 					temp = (String[]) enu.nextElement();
-					sum = Integer.parseInt(temp[2]) * Float.parseFloat(temp[3]);
-					amount += sum;
+					
+					Class.forName(driver);
+					con = DriverManager.getConnection(url, user, pw);
+					stmt = con.createStatement();
+					sql = "select * from book where b_id=" + temp[0];
+					rs = stmt.executeQuery(sql);
+
+					sum = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
+					//Integer.parseInt(rs.getString("quantity"))จำนวนที่เหลือ
+					while (rs.next()) {
+
+						if (sum < 1) {
+		%>
+		<script>
+								if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
+								}
+							</script>
+		<%
+			}
+
+						if (sum > Integer.parseInt(rs.getString("quantity"))) {
+		%>
+		<script>
+								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
+									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ซึ่งไม่เพียงพอในการขาย")) {
+			}
+		</script>
+		<%
+			}
+						sum = sum * Float.parseFloat(temp[3]);
+						amount += sum;
 		%>
 		<tr>
 			<td align="center"><input name="b_id" type="checkbox"
 				value="<%=temp[0]%>"></td>
-			<td align="center"><%=temp[0]%></td>
+			<td align="center"><%=rs.getString("isbn")%></td>
 			<td><%=new String(temp[1].getBytes("ISO8859_1"),
-							"windows-874")%></td>
+								"windows-874")%></td>
+			<td align="center"><%=rs.getString("quantity")%></td>
 			<td><input name="<%=temp[0]%>" type="text" value="<%=temp[2]%>"
 				size="3" maxlength="3"><a
-				href="add_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
-				href="reduce_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
+				href="add_to_cart.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
+				href="reduce_to_car.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
 			<td align="center"><%=temp[3]%></td>
 			<td align="center"><%=sum%></td>
 		</tr>
 		<%
+					}
 			}
 		%>
 		<tr>
-			<td colspan="2"><input name="del" type="submit"
+			<td colspan="3"><input name="del" type="submit"
 				value="ยกเลิกที่เลือก"></td>
 			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
 			<td align="center"><%=amount%></td>
 		</tr>
 		<tr>
-			<td colspan="6"><div align="center">
-					<input name="cal" type="submit" value=" คำนวณใหม่"> <input
-						name="buy" type="submit" value="เลือกซื้อสินค้าต่อ"> <input
+			<td colspan="7"><div align="center">
+					<input name="cal" type="submit" value="คำนวณราคา"> <input
 						name="pay" type="submit" value="ชำระเงิน">
 				</div></td>
 		</tr>
@@ -209,7 +240,6 @@
 %>
 <br>
 <%
-	out.println("<center>ยังไม่มีหนังสือในรถเข็น</center>");
 	}
 %>
 <br>
