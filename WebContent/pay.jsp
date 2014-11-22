@@ -31,7 +31,7 @@
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#E1EEEE">
 		<tr bgcolor="#79CDCD">
-			<td width="15%" align="center"><b>รหัสหนังสือ</b></td>
+			<td width="15%" align="center"><b>ISBN</b></td>
 			<td width="40%" align="center"><b>ชื่อหนังสือ</b></td>
 			<td width="15%" align="center"><b>จำนวน</b></td>
 			<td width="15%" align="center"><b>ราคา/หน่วย</b></td>
@@ -52,21 +52,21 @@
 					ResultSet rs = stmt.executeQuery(sql);
 
 					sum = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
-					//Integer.parseInt(rs.getString("quantity"))จำนวนที่เหลือ
+					//rs.getInt("quantity")จำนวนที่เหลือ
 					while (rs.next()) {
 
 						if (sum < 1) {
 							response.sendRedirect("view_cart.jsp");
 						}
 
-						if (sum > Integer.parseInt(rs.getString("quantity"))) {
+						if (sum > rs.getInt("quantity")) {
 							response.sendRedirect("view_cart.jsp");
 			}
 						sum = sum * Float.parseFloat(temp[3]);
 						amount += sum;
 		%>
 		<tr>
-			<td align="center"><%=temp[0]%></td>
+			<td align="center"><%=rs.getString("isbn")%></td>
 			<td><%=new String(temp[1].getBytes("ISO8859_1"),
 								"windows-874")%></td>
 			<td align="center"><%=temp[2]%></td>
