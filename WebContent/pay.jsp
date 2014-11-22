@@ -4,34 +4,21 @@
 <%@ include file="config.jsp"%>
 <jsp:useBean id="cart" class="ktpbook.ProductCart" scope="session" />
 <%
-	//ถ้ายังไม่ได้ login ให้ไป login เข้ามาก่อน
-	String status = "" + session.getAttribute("status");
-	if ((!status.equals("customer"))
-			&& cart.getItem().hasMoreElements()) {
-		out.println("<center>ให้ล็อกอินเข้าสู่ระบบก่อน");
-%>
-<jsp:include page="form_customer_login.jsp" />
-<%
-	} else {
-		String[] temp;
-		float price = 0;
-		int quantity = 0;
-		float amount = 0;
-		Class.forName(driver);
-		Connection con = DriverManager.getConnection(url, user, pw);
-		Statement stmt = con.createStatement();
-		String sql = "";
-		ResultSet rs = null;
-		if (request.getParameter("buy") != null) {
-			response.sendRedirect("product.jsp");
+	String[] temp;
+	if (request.getParameter("cal") != null) {
+		Enumeration e = cart.getItem();
+		while (e.hasMoreElements()) {
+			temp = (String[]) e.nextElement();
+			cart.setQuantity(temp[0], request.getParameter(temp[0]));
 		}
-		//ถ้าคลิกปุ่ม "ตกลง" ตรวจสอบว่าเลือกชำระเงินประเภทใด
-		if (request.getParameter("ok") != null) {
-			response.sendRedirect("confirm_pay.jsp");
-		}
-		//ถ้ารถเข็นมีสินค้าให้อ่านค่าออกมาแสดง
-		if (cart.getItem().hasMoreElements()) {
-			Enumeration enu = cart.getItem();
+	}
+	if (request.getParameter("buy") != null) {
+		response.sendRedirect("product.jsp");
+	}
+	if (request.getParameter("ok") != null) {
+		response.sendRedirect("confirm_pay.jsp");
+	}
+	if (cart.getItem().hasMoreElements()) {
 %><br>
 <table width="85%" border="1" align="center" bordercolor="black"
 	cellspacing="0" bgcolor="#79CDCD">
@@ -41,68 +28,77 @@
 </table>
 <br>
 <form method="post" action="pay.jsp">
-	<table width="70%" align="center" cellspacing="0" bgcolor="#E1EEEE"
-		bordercolor="black" border="1">
+	<table width="90%" border="1" align="center" cellspacing="0"
+		bordercolor="black" bgcolor="#E1EEEE">
 		<tr bgcolor="#79CDCD">
-			<td width="17%" align="center"><b>รหัสหนังสือ</b></td>
-			<td width="38%" align="center"><b>ชื่อหนังสือ</b></td>
-			<td width="10%" align="center"><b>จำนวน</b></td>
-			<td width="22%" align="center"><b>ราคา/หน่วย</b></td>
-			<td width="13%" align="center"><b>ราคารวม</b></td>
+			<td width="15%" align="center"><b>รหัสหนังสือ</b></td>
+			<td width="40%" align="center"><b>ชื่อหนังสือ</b></td>
+			<td width="15%" align="center"><b>จำนวน</b></td>
+			<td width="15%" align="center"><b>ราคา/หน่วย</b></td>
+			<td width="20%" align="center"><b>ราคารวม</b></td>
 		</tr>
 		<%
-			while (enu.hasMoreElements()) {
-						temp = (String[]) enu.nextElement();
-						quantity = Integer.parseInt(temp[2]);
-						price = Float.parseFloat(temp[3]);
-						if (quantity < 1) {
-		%>
-		<script>
-			if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
-				location = "view_cart.jsp";
+			Enumeration enu = cart.getItem();
+				float sum = 0;
+				float amount = 0;
+				//นำหนังสือที่อยู่ใน bean ออกมาแสดง
+				while (enu.hasMoreElements()) {
+					temp = (String[]) enu.nextElement();
+
+					Class.forName(driver);
+					Connection con = DriverManager.getConnection(url, user, pw);
+					Statement stmt = con.createStatement();
+					String sql = "select * from book where b_id=" + temp[0];
+					ResultSet rs = stmt.executeQuery(sql);
+
+					sum = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
+					//Integer.parseInt(rs.getString("quantity"))จำนวนที่เหลือ
+					while (rs.next()) {
+
+						if (sum < 1) {
+							response.sendRedirect("view_cart.jsp");
+						}
+
+						if (sum > Integer.parseInt(rs.getString("quantity"))) {
+							response.sendRedirect("view_cart.jsp");
 			}
-			location = "view_cart.jsp";
-		</script>
-		<%
-			}
-						price = price * quantity;
-						amount += price;
+						sum = sum * Float.parseFloat(temp[3]);
+						amount += sum;
 		%>
 		<tr>
 			<td align="center"><%=temp[0]%></td>
 			<td><%=new String(temp[1].getBytes("ISO8859_1"),
 								"windows-874")%></td>
-			<td align="center"><%=quantity%></td>
+			<td align="center"><%=temp[2]%></td>
 			<td align="center"><%=temp[3]%></td>
-			<td align="center"><%=price%></td>
+			<td align="center"><%=sum%></td>
 		</tr>
 		<%
 			}
+					rs.close();
+					con.close();
+				}
 		%>
 		<tr>
-			<td colspan="3">&nbsp;</td>
-			<td align="center"><b>ราคารวมทั้งหมด</b></td>
+			<td colspan="4" align="right"><b>ราคารวมทั้งหมด</b></td>
 			<td align="center"><%=amount%></td>
 		</tr>
 	</table>
 	<br>
-	<%
-		sql = "select * from customer where username='"
-						+ session.getAttribute("j_username") + "'";
-				rs = stmt.executeQuery(sql);
-				rs.next();
-	%>
 	<table width="70%" align="center" cellspacing="0" align="center">
-
 		<tr align="center">
 			<td colspan="2"><input name="ok" type="submit" value="ตกลง">
-				<input name="buy" type="submit" value=" เลือกซื้อสิ้นค้าต่อ "></td>
+				<input name="buy" type="submit" value="เลือกซื้อสิ้นค้า "></td>
 		</tr>
 	</table>
 </form>
 <%
-	rs.close();
-		}
+	} else {
+%>
+<br>
+<%
+	out.println("<center>ยังไม่มีหนังสือในรถเข็น</center>");
 	}
 %>
-<jsp:include page="footer.jsp" />
+<br>
+<%@ include file="footer.jsp"%>
