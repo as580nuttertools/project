@@ -228,26 +228,45 @@
 			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
 			<td align="center"><%=amount%></td>
 		</tr>
+		<%
+			String receive = request.getParameter("receive");
+				String receiveS = request.getParameter("receive");
+				float receiveI = 0;
+				if (receive != null) {
+					receiveI = Float.parseFloat(receiveS);
+					receiveI = receiveI - amount;
+
+				}
+		%>
+		<tr>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>รับเงิน</b></td>
+			<td align="center"><input name="receive" type="text" size="4"
+				maxlength="4" value="<%=receive%>"></td>
+		</tr>
+		<tr>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
+			<td align="center"><%=amount%></td>
+		</tr>
+		<tr>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>ทอนเงิน</b></td>
+			<td align="center">
+				<%
+					if (receive != null) {
+				%><%=receiveI%>
+				<%
+					}
+				%> <%-- <%=receiveI%> --%>
+			</td>
+		</tr>
+
 		<tr>
 			<td colspan="7"><div align="center">
 					<input name="cal" type="submit" value="คำนวณราคา"> <input
 						name="pay" type="submit" value="ชำระเงิน">
 				</div></td>
-		</tr>
-		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>รับเงิน</b></td>
-			<td align="center"></td>
-		</tr>
-		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
-			<td align="center"><%=sum%></td>
-		</tr>
-		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>ทอนเงิน</b></td>
-			<td align="center"></td>
 		</tr>
 	</table>
 </form>
