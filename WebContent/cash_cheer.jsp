@@ -123,10 +123,10 @@
 </form>
 <%
 	} catch (Exception e) {
-	out.println("ไม่มีหนังสือ");
-	%>
-	</table>
-	<%
+		out.println("ไม่มีหนังสือ");
+%>
+</table>
+<%
 	}
 	rs.close();
 	con.close();
@@ -196,8 +196,7 @@
 		%>
 		<script>
 								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
-									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%>
-			เล่ม ซึ่งไม่เพียงพอในการขาย")) {
+									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ซึ่งไม่เพียงพอในการขาย")) {
 			}
 		</script>
 		<%
@@ -234,6 +233,21 @@
 					<input name="cal" type="submit" value="คำนวณราคา"> <input
 						name="pay" type="submit" value="ชำระเงิน">
 				</div></td>
+		</tr>
+		<tr>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>รับเงิน</b></td>
+			<td align="center"></td>
+		</tr>
+		<tr>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
+			<td align="center"><%=sum%></td>
+		</tr>
+		<tr>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>ทอนเงิน</b></td>
+			<td align="center"></td>
 		</tr>
 	</table>
 </form>
