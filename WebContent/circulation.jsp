@@ -2,6 +2,11 @@
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*"%>
 <%@ include file="config.jsp"%>
+<script language="JavaScript" type="text/JavaScript">
+	function MM_openBrWindow(theURL, winName, features) {
+		window.open(theURL, winName, features);
+	}
+</script>
 <jsp:useBean id="pa" class="ktpbook.PageBean" scope="session" />
 <%
 	Class.forName(driver);
@@ -17,12 +22,12 @@
 		}
 %>
 <br>
-<form name="frmSearch" method="post" action="book_list_menu.jsp">
+<form name="frmSearch" method="post" action="circulation_menu.jsp">
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#79CDCD">
 		<tr align="center">
 			<td><b>ค้นหา</b> <input name="keyword" type="text" id="keyword"
-				value="<%=keyword%>"> <input type="submit" value="ค้นหา">
+				value="<%=keyword%>"> <input type="submit" value="ค้นหา"></td>
 		</tr>
 	</table>
 </form>
@@ -76,9 +81,8 @@
 		<td align="center"><span style="font-weight: bold">ISBN</span></td>
 		<td align="center"><span style="font-weight: bold">ชื่อหนังสือ</span></td>
 		<td width="10%" align="center"><span style="font-weight: bold">จำนวน</span></td>
-		<td width="10%" align="center"><span style="font-weight: bold">แก้ไข</span></td>
-		<td width="10% align=" center"" align="center"><span
-			style="font-weight: bold">ลบ</span></td>
+		<td width="10%" align="center"><span style="font-weight: bold">ยอดขาย
+		</span></td>
 	</tr>
 	<%
 		do {
@@ -87,27 +91,22 @@
 		<td align="center"><%=rs.getString("isbn")%></td>
 		<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-		<td align="center"><%=rs.getString("quantity")%></td>
-		<td align="center"><a
-			href="edit_book.jsp?b_id=<%=rs.getString("b_id")%>" class="button">แก้ไข</a></td>
-		<td align="center"><a
-			href="del_book.jsp?b_id=<%=rs.getString("b_id")%>" class="button">ลบ</a></td>
+		<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
+		<td align="center"><%=rs.getString("score")%> เล่ม</td>
 	</tr>
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
 	<tr>
-		<td colspan="5"><br></td>
-	</tr>
-	<td colspan="5" align="center"><a href="add_book.jsp"
-		class="button">เพิ่มหนังสือ</a>
-	</tr>
-
-
+		<td colspan="5"><div align="center">
+				<input name="print_detail" type="button"
+					onClick="MM_openBrWindow('print_circulation.jsp','','width=650,height=500')"
+					value="พิมพ์ใบสั่งซื้อ">
+			</div></td>
 </table>
 <br>
 <form name="form1" method="post"
-	action="book_list_menu.jsp?keyword=<%=keyword%>">
+	action="circulation_menu.jsp?keyword=<%=keyword%>">
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#E1EEEE">
 		<tr>
