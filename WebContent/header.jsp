@@ -84,6 +84,7 @@ a.Button:hover {
 								<a href="admin_data_orders_menu.jsp" class=Button>รายการสั่งซื้อ</a>
 								<a href="book_type_list_menu.jsp" class=Button>ประเภทหนังสือ</a>
 								<a href="book_list_menu.jsp" class=Button>รายการหนังสือ</a>
+								<a href="order_book_menu.jsp" class=Button>สั่งซื้อหนังสือ</a>
 								<a href="circulation_menu.jsp" class=Button>ยอดขาย</a>
 								<%
 									}
