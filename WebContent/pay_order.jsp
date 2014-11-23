@@ -3,6 +3,11 @@
 <%@ include file="header.jsp"%>
 <%@ include file="config.jsp"%>
 <jsp:useBean id="cart" class="ktpbook.ProductCart" scope="session" />
+<script language="JavaScript" type="text/JavaScript">
+	function MM_openBrWindow(theURL, winName, features) {
+		window.open(theURL, winName, features);
+	}
+</script>
 <%
 	String[] temp;
 	if (request.getParameter("cal") != null) {
@@ -23,7 +28,7 @@
 <table width="85%" border="1" align="center" bordercolor="black"
 	cellspacing="0" bgcolor="#79CDCD">
 	<tr>
-		<td align="center"><b>ยืนยันการสั่งซื้อ</b></td>
+		<td align="center"><b>ใบสั่งซื้อ</b></td>
 	</tr>
 </table>
 <br>
@@ -55,9 +60,7 @@
 					//rs.getInt("quantity")จำนวนที่เหลือ
 					while (rs.next()) {
 						if (sum < 1) {
-							response.sendRedirect("cash_cheer_menu.jsp");
-						} if (sum > rs.getInt("quantity")) {
-							response.sendRedirect("cash_cheer_menu.jsp");
+							response.sendRedirect("order_book_menu.jsp");
 						}
 						sum = sum * Float.parseFloat(temp[3]);
 						amount += sum;
@@ -80,12 +83,26 @@
 			<td colspan="4" align="right"><b>ราคารวมทั้งหมด</b></td>
 			<td align="center"><%=amount%></td>
 		</tr>
+		<%
+			float vat = (amount * 7) / 100;
+				amount = amount + vat;
+		%>
+		<tr>
+			<td colspan="4" align="right"><b>ภาษี7%</b></td>
+			<td align="center"><%=vat%> บาท</td>
+		</tr>
+		<tr>
+			<td colspan="4" align="right"><b>รวมภาษี7%แล้ว</b></td>
+			<td align="center"><%=amount%> บาท</td>
+		</tr>
 	</table>
 	<br>
 	<table width="70%" align="center" cellspacing="0" align="center">
 		<tr align="center">
-			<td colspan="2"><input name="ok" type="submit" value="ตกลง">
-				<input name="buy" type="submit" value="เลือกซื้อสิ้นค้า "></td>
+			<td colspan="2"><input name="print_detail" type="button"
+				onClick="MM_openBrWindow('print_order_detail_out.jsp','','width=650,height=700')"
+				value="พิมพ์ใบสั่งซื้อ"> <input name="buy" type="submit"
+				value="เลือกซื้อสิ้นค้า "></td>
 		</tr>
 	</table>
 </form>
