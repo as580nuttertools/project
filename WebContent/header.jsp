@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.Vector"%>
+<meta http-equiv="refresh" content="10">
 <style type='text/css'>
 a.Button {
 	border-style: solid;
