@@ -82,8 +82,14 @@
 	</tr>
 	<%
 		do {
-	%>
-	<tr>
+				if (rs.getInt("quantity") <= 5) {
+	%><tr bgcolor="#FF7B7B">
+		<%
+			} else {
+		%><tr>
+		<%
+			}
+		%>
 		<td align="center"><%=rs.getString("isbn")%></td>
 		<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
@@ -91,9 +97,11 @@
 		<td align="center"><a
 			href="add_to_order.jsp?b_id=<%=rs.getString("b_id")%>" class=Button>ซื้อ</a></td>
 	</tr>
+	
 	<%
-		} while (rs.next() && rs.getRow() <= pa.getEndRow());
-	%>
+			} while (rs.next() && rs.getRow() <= pa.getEndRow());
+		%>
+
 </table>
 <form name="form1" method="post"
 	action="order_book_menu.jsp?keyword=<%=keyword%>">
@@ -193,6 +201,7 @@
 
 						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
+						sum = ((sum * 7) / 100) + sum;
 		%>
 		<tr>
 			<td align="center"><input name="b_id" type="checkbox"
@@ -223,18 +232,17 @@
 				amount = amount + vat;
 		%>
 		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>ภาษี7%</b></td>
+			<td colspan="6" align="right"><b>ภาษี7%</b></td>
 			<td align="center"><%=vat%> บาท</td>
 		</tr>
 		<tr>
-			<td colspan="3" align="right"><b>รวมภาษี7%แล้ว</b></td>
+			<td colspan="6" align="right"><b>รวมภาษี7%แล้ว</b></td>
 			<td align="center"><%=amount%> บาท</td>
 		</tr>
 		<tr>
 			<td colspan="7"><div align="center">
 					<input name="cal" type="submit" value="คำนวณ"> <input
-						name="pay" type="submit" value="ชำระเงิน">
+						name="pay" type="submit" value="สั่งซื้อ">
 				</div></td>
 		</tr>
 	</table>
