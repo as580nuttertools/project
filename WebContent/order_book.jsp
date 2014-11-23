@@ -76,7 +76,7 @@
 	<tr bgcolor="#79CDCD">
 		<td align="center"><span style="font-weight: bold">ISBN</span></td>
 		<td align="center"><span style="font-weight: bold">ชื่อหนังสือ</span></td>
-		<td width="10%" align="center"><span style="font-weight: bold">จำนวน</span></td>
+		<td width="15%" align="center"><span style="font-weight: bold">จำนวนคงเหลือ</span></td>
 		<td width="10%" align="center"><span style="font-weight: bold">ซื้อ</span></td>
 
 	</tr>
@@ -87,10 +87,9 @@
 		<td align="center"><%=rs.getString("isbn")%></td>
 		<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-		<td align="center"><%=rs.getString("quantity")%></td>
+		<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
 		<td align="center"><a
-			href="add_to_cash_cheer.jsp?b_id=<%=rs.getString("b_id")%>"
-			class=Button>ซื้อ</a></td>
+			href="add_to_order.jsp?b_id=<%=rs.getString("b_id")%>" class=Button>ซื้อ</a></td>
 	</tr>
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
@@ -141,7 +140,7 @@
 		}
 	}
 	if (request.getParameter("pay") != null) {
-		response.sendRedirect("pay_cash_cheer.jsp");
+		response.sendRedirect("pay_order.jsp");
 	}
 	if (request.getParameter("del") != null) {
 		String[] b_id = request.getParameterValues("b_id");
@@ -159,8 +158,8 @@
 		<tr bgcolor="#79CDCD">
 			<td width="5%" align="center"><b>เลือก</b></td>
 			<td width="15%" align="center"><b>รหัสหนังสือ</b></td>
-			<td width="40%" align="center"><b>ชื่อหนังสือ</b></td>
-			<td width="15%" align="center"><b>จำนวน</b></td>
+			<td width="20%" align="center"><b>ชื่อหนังสือ</b></td>
+			<td width="15%" align="center"><b>จำนวนคงเหลือ</b></td>
 			<td width="15%" align="center"><b>จำนวน</b></td>
 			<td width="15%" align="center"><b>ราคา/หน่วย</b></td>
 			<td width="20%" align="center"><b>ราคารวม</b></td>
@@ -186,13 +185,12 @@
 						if (quantityB < 1) {
 		%>
 		<script>
-								if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
-								}
-							</script>
+			if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
+			}
+		</script>
 		<%
 			}
 
-						
 						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
 		%>
@@ -208,7 +206,7 @@
 				href="add_to_order.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
 				href="reduce_to_order.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
 			<td align="center"><%=temp[3]%> บาท</td>
-			<td align="center"><%=sum%></td>
+			<td align="center"><%=sum%> บาท</td>
 		</tr>
 		<%
 			}
@@ -218,54 +216,20 @@
 			<td colspan="3"><input name="del" type="submit"
 				value="ยกเลิกที่เลือก"></td>
 			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
-			<td align="center"><%=amount%></td>
+			<td align="center"><%=amount%> บาท</td>
 		</tr>
 		<%
-			String receive = "0";
-				receive = request.getParameter("receive");
-				String receiveS = "0";
-				float receiveI = 0;
-				if (receive != null) {//check receive
-					try {//check receive NumberFormatException
-						receiveS = request.getParameter("receive");
-						receiveI = Float.parseFloat(receiveS);
-						receiveI = receiveI - amount;
-						
-						if (Integer.parseInt(receive) <= 0) {
-							receive = "0";
-						}
-					} catch (NumberFormatException e) {
-						receive = "1";
-					}
-		%>
-		<%
-			}
+			float vat = (amount * 7) / 100;
+				amount = amount + vat;
 		%>
 		<tr>
-			<td colspan="5" align="right"><b>รับเงิน</b></td>
-			<td align="center" colspan="2"><input name="receive" type="text"
-				size="5" maxlength="5"
-				<%if (receive == null) {
-					receive = "0";
-				}
-				if (receive != null) {
-					;
-				}%>
-				value="<%=receive%>"> บาท</td>
+			<td colspan="3"></td>
+			<td colspan="3" align="right"><b>ภาษี7%</b></td>
+			<td align="center"><%=vat%> บาท</td>
 		</tr>
 		<tr>
-			<td colspan="5" align="right"><b>ราคารวมทั้งหมด</b></td>
-			<td align="center" colspan="2"><%=amount%> บาท</td>
-		</tr>
-		<tr>
-			<td colspan="5" align="right"><b>ทอนเงิน</b></td>
-			<td align="center" colspan="2">
-				<%
-					if (receive != null) {
-				%><%=receiveI%> <%
- 	}
- %> บาท
-			</td>
+			<td colspan="3" align="right"><b>รวมภาษี7%แล้ว</b></td>
+			<td align="center"><%=amount%> บาท</td>
 		</tr>
 		<tr>
 			<td colspan="7"><div align="center">
@@ -283,3 +247,7 @@
 	}
 %>
 <br>
+<%
+	rs.close();
+	con.close();
+%>
