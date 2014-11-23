@@ -18,7 +18,7 @@
 		}
 %>
 <br>
-<form name="frmSearch" method="post" action="cash_cheer_menu.jsp">
+<form name="frmSearch" method="post" action="order_book_menu.jsp">
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#79CDCD">
 		<tr align="center">
@@ -97,7 +97,7 @@
 	%>
 </table>
 <form name="form1" method="post"
-	action="cash_cheer_menu.jsp?keyword=<%=keyword%>">
+	action="order_book_menu.jsp?keyword=<%=keyword%>">
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#E1EEEE">
 		<tr>
@@ -153,7 +153,7 @@
 	}
 	if (cart.getItem().hasMoreElements()) {
 %><br>
-<form method="post" action="cash_cheer_menu.jsp">
+<form method="post" action="order_book_menu.jsp">
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#E1EEEE">
 		<tr bgcolor="#79CDCD">
@@ -192,16 +192,7 @@
 		<%
 			}
 
-						if (quantityB > Integer.parseInt(rs
-								.getString("quantity"))) {
-		%>
-		<script>
-								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
-									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ซึ่งไม่เพียงพอในการขาย")) {
-			}
-		</script>
-		<%
-			}
+						
 						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
 		%>
@@ -214,8 +205,8 @@
 			<td align="center"><%=rs.getString("quantity")%></td>
 			<td><input name="<%=temp[0]%>" type="text" value="<%=temp[2]%>"
 				size="3" maxlength="3"><a
-				href="add_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
-				href="reduce_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
+				href="add_to_order.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
+				href="reduce_to_order.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
 			<td align="center"><%=temp[3]%> บาท</td>
 			<td align="center"><%=sum%></td>
 		</tr>
