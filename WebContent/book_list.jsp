@@ -18,7 +18,7 @@
 %>
 <br>
 <form name="frmSearch" method="post" action="book_list_menu.jsp">
-	<table width="85%" border="1" align="center" cellspacing="0"
+	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#79CDCD">
 		<tr align="center">
 			<td><b>ค้นหา</b> <input name="keyword" type="text" id="keyword"
@@ -65,29 +65,35 @@
 		pa.actionPage(action, 5);
 		// แสดงหนังสือตามค่าที่กำหนด
 		sql = "SELECT * FROM book WHERE title like '%" + keyword
-				+ "%' or isbn like '%" + keyword + "%'";
+				+ "%' or isbn like '%" + keyword + "%' order by isbn";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
 %>
-<table width="60%" border="1" align="center" cellspacing="0"
+<table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
 	<tr bgcolor="#79CDCD">
 		<td align="center"><span style="font-weight: bold">ISBN</span></td>
 		<td align="center"><span style="font-weight: bold">ชื่อหนังสือ</span></td>
-		<td width="10%" align="center"><span style="font-weight: bold">จำนวน</span></td>
+		<td width="15%" align="center"><span style="font-weight: bold">จำนวนคงเหลือ</span></td>
 		<td width="10%" align="center"><span style="font-weight: bold">แก้ไข</span></td>
 		<td width="10% align=" center"" align="center"><span
 			style="font-weight: bold">ลบ</span></td>
 	</tr>
 	<%
 		do {
+			if (rs.getInt("quantity") <= 5) {
+%><tr bgcolor="#FF7B7B">
+	<%
+		} else {
+	%><tr>
+	<%
+		}
 	%>
-	<tr>
 		<td align="center"><%=rs.getString("isbn")%></td>
 		<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-		<td align="center"><%=rs.getString("quantity")%></td>
+		<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
 		<td align="center"><a
 			href="edit_book.jsp?b_id=<%=rs.getString("b_id")%>" class="button">แก้ไข</a></td>
 		<td align="center"><a
@@ -108,7 +114,7 @@
 <br>
 <form name="form1" method="post"
 	action="book_list_menu.jsp?keyword=<%=keyword%>">
-	<table width="70%" border="1" align="center" cellspacing="0"
+	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#E1EEEE">
 		<tr>
 			<td><div align="center">
