@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=windows-874"%>
+<%@ page import="java.sql.*,java.util.Vector"%>
 <style type='text/css'>
 a.Button {
 	border-style: solid;
@@ -30,6 +31,7 @@ a.Button:hover {
 	position: relative;
 }
 </style>
+
 <body topmargin="0" leftmargin="0">
 	<div id="Layer1"
 		style="position: absolute; left: 500px; top: 56px; width: 261px; height: 18px; z-index: 1">
@@ -80,14 +82,31 @@ a.Button:hover {
 									}
 										if (session.getAttribute("status").equals("admin")) {
 								%>
-								<a href="cash_cheer_menu.jsp" class=Button>ขายหน้าร้าน</a>
-								<a href="admin_data_orders_menu.jsp" class=Button>รายการสั่งซื้อ</a>
+								<a href="cash_cheer_menu.jsp" class=Button>ขายหน้าร้าน</a> <a
+									href="admin_data_orders_menu.jsp" class=Button>รายการสั่งซื้อ</a>
 								<a href="book_type_list_menu.jsp" class=Button>ประเภทหนังสือ</a>
-								<a href="book_list_menu.jsp" class=Button>รายการหนังสือ</a>
-								<a href="order_book_menu.jsp" class=Button>สั่งซื้อหนังสือ</a>
-								<a href="circulation_menu.jsp" class=Button>ยอดขาย</a>
+								<a href="book_list_menu.jsp" class=Button>รายการหนังสือ</a> <a
+									href="order_book_menu.jsp" class=Button>สั่งซื้อหนังสือ</a> <a
+									href="circulation_menu.jsp" class=Button>ยอดขาย</a>
+								<%
+									Class.forName("org.gjt.mm.mysql.Driver");
+											Connection con2 = DriverManager.getConnection(
+													"jdbc:mysql://localhost/ktpbook", "root", "1234");
+											Statement stmt2 = con2.createStatement();
+											String sql2;
+											ResultSet rs2 = null;
+											sql2 = "select * from orders where status='1'";
+											rs2 = stmt2.executeQuery(sql2);
+											if (rs2.next()) {
+												rs2.close();
+												con2.close();
+								%>
+								<SCRIPT LANGUAGE="JavaScript">
+									alert("มีรายการสั่งซื้อมาใหม่");
+								</script>
 								<%
 									}
+										}
 									}
 								%>
 							</div></td>
