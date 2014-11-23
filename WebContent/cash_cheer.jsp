@@ -179,11 +179,11 @@
 					sql = "select * from book where b_id=" + temp[0];
 					rs = stmt.executeQuery(sql);
 
-					sum = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
+					int quantityB = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
 					//Integer.parseInt(rs.getString("quantity"))จำนวนที่เหลือ
 					while (rs.next()) {
 
-						if (sum < 1) {
+						if (quantityB < 1) {
 		%>
 		<script>
 								if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
@@ -192,7 +192,8 @@
 		<%
 			}
 
-						if (sum > Integer.parseInt(rs.getString("quantity"))) {
+						if (quantityB > Integer.parseInt(rs
+								.getString("quantity"))) {
 		%>
 		<script>
 								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
@@ -201,7 +202,7 @@
 		</script>
 		<%
 			}
-						sum = sum * Float.parseFloat(temp[3]);
+						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
 		%>
 		<tr>
@@ -215,7 +216,7 @@
 				size="3" maxlength="3"><a
 				href="add_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
 				href="reduce_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
-			<td align="center"><%=temp[3]%></td>
+			<td align="center"><%=temp[3]%> บาท</td>
 			<td align="center"><%=sum%></td>
 		</tr>
 		<%
@@ -229,42 +230,55 @@
 			<td align="center"><%=amount%></td>
 		</tr>
 		<%
-			String receive = request.getParameter("receive");
-				String receiveS = request.getParameter("receive");
+			String receive = "0";
+				receive = request.getParameter("receive");
+				String receiveS = "0";
 				float receiveI = 0;
-				if (receive != null) {
-					receiveI = Float.parseFloat(receiveS);
-					receiveI = receiveI - amount;
-
-				}
+				if (receive != null) {//check receive
+					try {//check receive NumberFormatException
+						receiveS = request.getParameter("receive");
+						receiveI = Float.parseFloat(receiveS);
+						receiveI = receiveI - amount;
+						
+						if (Integer.parseInt(receive) <= 0) {
+							receive = "0";
+						}
+					} catch (NumberFormatException e) {
+						receive = "1";
+					}
+		%>
+		<%
+			}
 		%>
 		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>รับเงิน</b></td>
-			<td align="center"><input name="receive" type="text" size="4"
-				maxlength="4" value="<%=receive%>"></td>
+			<td colspan="5" align="right"><b>รับเงิน</b></td>
+			<td align="center" colspan="2"><input name="receive" type="text"
+				size="5" maxlength="5"
+				<%if (receive == null) {
+					receive = "0";
+				}
+				if (receive != null) {
+					;
+				}%>
+				value="<%=receive%>"> บาท</td>
 		</tr>
 		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
-			<td align="center"><%=amount%></td>
+			<td colspan="5" align="right"><b>ราคารวมทั้งหมด</b></td>
+			<td align="center" colspan="2"><%=amount%> บาท</td>
 		</tr>
 		<tr>
-			<td colspan="3"></td>
-			<td colspan="3" align="right"><b>ทอนเงิน</b></td>
-			<td align="center">
+			<td colspan="5" align="right"><b>ทอนเงิน</b></td>
+			<td align="center" colspan="2">
 				<%
 					if (receive != null) {
-				%><%=receiveI%>
-				<%
-					}
-				%> <%-- <%=receiveI%> --%>
+				%><%=receiveI%> <%
+ 	}
+ %> บาท
 			</td>
 		</tr>
-
 		<tr>
 			<td colspan="7"><div align="center">
-					<input name="cal" type="submit" value="คำนวณราคา"> <input
+					<input name="cal" type="submit" value="คำนวณ"> <input
 						name="pay" type="submit" value="ชำระเงิน">
 				</div></td>
 		</tr>
