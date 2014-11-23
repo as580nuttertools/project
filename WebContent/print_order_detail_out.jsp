@@ -79,7 +79,6 @@
 					}
 					sum = sum * Float.parseFloat(temp[3]);
 					amount += sum;
-					sum = ((sum * 7) / 100) + sum;
 	%>
 	<tr>
 		<td align="center"><%=rs.getString("isbn")%></td>
