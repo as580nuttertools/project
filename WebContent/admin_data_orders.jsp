@@ -105,7 +105,8 @@
 </table>
 <br>
 <%
-	out.println("<center>ไม่มีรายการสั่งซื้อที่ค้นหา</center>");
+	out.println("<center>ไม่พบรหัสสั่งซื้อ  " + keyword
+				+ "</center>");
 	}
 	rs.close();
 	con.close();
