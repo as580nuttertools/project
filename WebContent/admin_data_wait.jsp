@@ -4,16 +4,28 @@
 <%@ include file="config.jsp"%>
 <%@ include file="m_date.jsp"%>
 <%
+	String keyword = "";
+	if (request.getParameter("keyword") != null) {
+		keyword = request.getParameter("keyword");
+	}
+
 	Class.forName(driver);
 	Connection con = DriverManager.getConnection(url, user, pw);
 	Statement stmt = con.createStatement();
-	String sql = "select * from orders,user where orders.cus_id=user.cus_id and orders.status = 2 order by orders.order_id desc";
+	//หาจำนวนหนังสือ
+	int totalRow = 0;
+	String sql = "select  count(*) as totalRow from orders,user where orders.cus_id=user.cus_id and orders.status = 2 order by orders.order_id desc";
 	ResultSet rs = stmt.executeQuery(sql);
+	while (rs.next()) {
+		totalRow = rs.getInt("totalRow");
+	}
+	rs.close();
+	sql = "select * from orders,user where orders.cus_id=user.cus_id and orders.status = 2 and orders.order_id like '%"
+			+ keyword + "%' order by orders.order_id desc";
+	rs = stmt.executeQuery(sql);
 	boolean Empty = !rs.next();
-	
-	
 %><br>
-<table width="85%" border="1" align="center" bordercolor="black"
+<table width="90%" border="1" align="center" bordercolor="black"
 	cellspacing="0" bgcolor="#79CDCD">
 	<tr>
 		<td align="center"><b>ข้อมูลการสั่งซื้อ</b></td>
@@ -27,7 +39,21 @@
 	</tr>
 </table>
 <br>
-<table width="70%" border="1" align="center" cellspacing="0"
+<form name="frmSearch" method="post" action="admin_data_wait_menu.jsp">
+	<table width="90%" border="1" align="center" cellspacing="0"
+		bordercolor="black" bgcolor="#79CDCD">
+		<tr align="center">
+			<td><b>ค้นหารหัสสั่งซื้อ</b> <input name="keyword" type="text" id="keyword"
+				value="<%=keyword%>"> <input type="submit" value="ค้นหา">
+		</tr>
+	</table>
+</form>
+<%
+	out.println("<center>รายการสั่งซื้อทั้งหมด " + totalRow
+			+ " รายการ</center>");
+%>
+<br>
+<table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
 	<tr bgcolor="#79CDCD">
 		<td align="center"><b>รหัสสั่งซื้อ</b></td>
@@ -38,29 +64,29 @@
 	</tr>
 	<%
 		try {
-				do {
+			do {
 	%>
 	<tr>
 		<td align="center"><%=rs.getString("order_id")%></td>
 		<td><%=new String(rs.getString("fname").getBytes(
-								"ISO8859_1"), "windows-874")%> <%=new String(rs.getString("lname").getBytes(
-								"ISO8859_1"), "windows-874")%></td>
+							"ISO8859_1"), "windows-874")%> <%=new String(rs.getString("lname").getBytes(
+							"ISO8859_1"), "windows-874")%></td>
 		<td align="center"><%=dateTH(rs.getString("date"))%></td>
 		<td align="center"><a
 			href="chang_status.jsp?order_id=<%=rs.getString("order_id")%>&status=<%=rs.getString("status")%>"
 			class="button"> <%
  	if (rs.getString("status").equals("1")) {
- 					out.println("ตรวจสอบการสั่งซื้อ");
- 				}
- 				if (rs.getString("status").equals("2")) {
- 					out.println("รอรับสิ้นค้า");
- 				}
- 				if (rs.getString("status").equals("3")) {
- 					out.println("ขายแล้ว");
- 				}
- 				if (rs.getString("status").equals("4")) {
- 					out.println("ยกเลิกการขาย ");
- 				}
+ 				out.println("ตรวจสอบการสั่งซื้อ");
+ 			}
+ 			if (rs.getString("status").equals("2")) {
+ 				out.println("รอรับสิ้นค้า");
+ 			}
+ 			if (rs.getString("status").equals("3")) {
+ 				out.println("ขายแล้ว");
+ 			}
+ 			if (rs.getString("status").equals("4")) {
+ 				out.println("ยกเลิกการขาย ");
+ 			}
  %>
 		</a></td>
 		</td>
@@ -70,13 +96,18 @@
 	</tr>
 	</tr>
 	<%
-		} while (rs.next());
-				rs.close();
-				con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			} while (rs.next());
+			rs.close();
+			con.close();
+		} catch (Exception e) {
+	%>
+</table>
+<br>
+<%
+	out.println("<center>ไม่พบรหัสสั่งซื้อ  " + keyword
+				+ "</center>");
+	}
 	rs.close();
 	con.close();
-	%>
+%>
 </table>
