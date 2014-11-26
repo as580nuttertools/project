@@ -54,8 +54,9 @@
 
 		int totalRow = 0;
 		//หาจำนวนหนังสือ
-		sql = "select  count(*) as totalRow from book WHERE title like '%"
-				+ keyword + "%' or isbn like '%" + keyword + "%'";
+		sql = "select  count(*) as totalRow FROM book WHERE quantity < 5 and title like '%"
+				+ keyword + "%' and isbn like '%" + keyword
+				+ "%' order by isbn";
 		rs = stmt.executeQuery(sql);
 		while (rs.next()) {
 			totalRow = rs.getInt("totalRow");
@@ -65,8 +66,9 @@
 		pa.setTotalRow(totalRow);
 		pa.actionPage(action, 5);
 		// แสดงหนังสือตามค่าที่กำหนด
-		sql = "SELECT * FROM book WHERE title like '%" + keyword
-				+ "%' or isbn like '%" + keyword + "%' order by isbn";
+		sql = "SELECT * FROM book WHERE quantity <= 5 and title like '%"
+				+ keyword + "%' and isbn like '%" + keyword
+				+ "%' order by isbn";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
@@ -82,25 +84,18 @@
 	</tr>
 	<%
 		do {
-				if (rs.getInt("quantity") <= 5) {
-	%><tr bgcolor="#FF7B7B">
-		<%
-			} else {
-		%><tr>
-		<%
-			}
-		%>
-		<td align="center"><%=rs.getString("isbn")%></td>
-		<td><%=new String(rs.getString("title").getBytes(
+	%>
+	<td align="center"><%=rs.getString("isbn")%></td>
+	<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-		<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
-		<td align="center"><a
-			href="add_to_order.jsp?b_id=<%=rs.getString("b_id")%>" class=Button>ซื้อ</a></td>
+	<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
+	<td align="center"><a
+		href="add_to_order.jsp?b_id=<%=rs.getString("b_id")%>" class=Button>ซื้อ</a></td>
 	</tr>
-	
+
 	<%
-			} while (rs.next() && rs.getRow() <= pa.getEndRow());
-		%>
+		} while (rs.next() && rs.getRow() <= pa.getEndRow());
+	%>
 
 </table>
 <form name="form1" method="post"
