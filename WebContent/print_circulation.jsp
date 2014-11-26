@@ -9,6 +9,7 @@
 	Statement stmt = con.createStatement();
 	String sql;
 	ResultSet rs = null;
+	int sum,amount = 0;
 	try {
 %>
 <br>
@@ -65,34 +66,47 @@
 <table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
 	<tr bgcolor="#79CDCD">
-		<td align="center"><span style="font-weight: bold">ISBN</span></td>
-		<td align="center"><span style="font-weight: bold">ชื่อหนังสือ</span></td>
-		<td width="20%" align="center"><span style="font-weight: bold">จำนวนคงเหลือ</span></td>
-		<td width="15%" align="center"><span style="font-weight: bold">ยอดขาย
+		<td width="15%" align="center"><span style="font-weight: bold">ISBN</span></td>
+		<td width="30%" align="center"><span style="font-weight: bold">ชื่อหนังสือ</span></td>
+		<td width="10%" align="center"><span style="font-weight: bold">ราตา</span></td>
+		<td width="10%" align="center"><span style="font-weight: bold">ยอดขาย
+		</span></td>
+		<td width="10%" align="center"><span style="font-weight: bold">ยอดขาย
 		</span></td>
 	</tr>
 	<%
 		do {
 	%>
-	<tr>
-		<td align="center"><%=rs.getString("isbn")%></td>
-		<td><%=new String(rs.getString("title").getBytes(
+	<td align="center"><%=rs.getString("isbn")%></td>
+	<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-		<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
-		<td align="center"><%=rs.getString("score")%> เล่ม</td>
-	</tr>
+	<td align="center"><%=rs.getString("price")%> บาท</td>
+	<td align="center"><%=rs.getString("score")%> เล่ม</td>
 	<%
-		} while (rs.next() && rs.getRow() <= pa.getEndRow());
+		sum = rs.getInt("price") * rs.getInt("score");
+	%>
+	<td align="center"><%=sum%>
+		บาท</td>
+	</tr>
+
+
+	<%
+	amount = amount + sum;
+			} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
 
 	<tr>
-		<td colspan="5"><div align="center">
-					<input name="print" type="button" id="print"
-						onClick="window.print()" value=" พิมพ์ "> <input
-						name="close" type="button" id="close2" onClick="window.close()"
-						value="ปิด  ">
-				</div></td>
+		<td colspan="4" align="right"><b>ยอดขายทั้งหมด</b></td>
+		<td align="center"><%=amount%> บาท</td>
 	</tr>
+	<tr>
+		<td colspan="5"><div align="center">
+				<input name="print_detail" type="button"
+					onClick="MM_openBrWindow('print_circulation.jsp','','width=650,height=500')"
+					value="พิมพ์ใบสั่งซื้อ">
+			</div></td>
+	</tr>
+
 </table>
 <%
 	} catch (Exception e) {
