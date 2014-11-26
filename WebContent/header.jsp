@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=windows-874"%>
 <%@ page import="java.sql.*,java.util.Vector"%>
-<meta http-equiv="refresh" content="10">
 <style type='text/css'>
 a.Button {
 	border-style: solid;
@@ -90,23 +89,6 @@ a.Button:hover {
 									href="order_book_menu.jsp" class=Button>สั่งซื้อหนังสือ</a> <a
 									href="circulation_menu.jsp" class=Button>ยอดขาย</a>
 								<%
-									Class.forName("org.gjt.mm.mysql.Driver");
-											Connection con2 = DriverManager.getConnection(
-													"jdbc:mysql://localhost/ktpbook", "root", "1234");
-											Statement stmt2 = con2.createStatement();
-											String sql2;
-											ResultSet rs2 = null;
-											sql2 = "select * from orders where status='1'";
-											rs2 = stmt2.executeQuery(sql2);
-											if (rs2.next()) {
-												rs2.close();
-												con2.close();
-								%>
-								<SCRIPT LANGUAGE="JavaScript">
-									alert("มีรายการสั่งซื้อมาใหม่");
-								</script>
-								<%
-									}
 										}
 									}
 								%>
