@@ -4,6 +4,10 @@
 <%@ include file="config.jsp"%>
 <%@ include file="m_date.jsp"%>
 <%
+	String keyword = "";
+	if (request.getParameter("keyword") != null) {
+		keyword = request.getParameter("keyword");
+	}
 	Class.forName(driver);
 	Connection con = DriverManager.getConnection(url, user, pw);
 	Statement stmt = con.createStatement();
@@ -15,7 +19,8 @@
 		totalRow = rs.getInt("totalRow");
 	}
 	rs.close();
-	sql = "select * from orders,user where orders.cus_id=user.cus_id and orders.status = 1 order by orders.order_id desc";
+	sql = "select * from orders,user where orders.cus_id=user.cus_id and orders.status = 1 and orders.order_id like '%"
+			+ keyword + "%' order by orders.order_id desc";
 	rs = stmt.executeQuery(sql);
 	int count = 0;
 	boolean Empty = !rs.next();
@@ -34,6 +39,15 @@
 	</tr>
 </table>
 <br>
+<form name="frmSearch" method="post" action="admin_data_orders_menu.jsp">
+	<table width="90%" border="1" align="center" cellspacing="0"
+		bordercolor="black" bgcolor="#79CDCD">
+		<tr align="center">
+			<td><b>ค้นหา</b> <input name="keyword" type="text" id="keyword"
+				value="<%=keyword%>"> <input type="submit" value="ค้นหา">
+		</tr>
+	</table>
+</form>
 <%
 	out.println("<center>รายการสั่งซื้อ " + totalRow
 			+ " รายการ</center>");
@@ -87,9 +101,13 @@
 			rs.close();
 			con.close();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		rs.close();
-		con.close();
 	%>
+</table>
+<br>
+<%
+	out.println("<center>ไม่มีรายการสั่งซื้อที่ค้นหา</center>");
+	}
+	rs.close();
+	con.close();
+%>
 </table>
