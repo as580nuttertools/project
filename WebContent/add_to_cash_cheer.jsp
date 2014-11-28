@@ -9,12 +9,19 @@
 	Statement stmt = con.createStatement();
 	String sql = "select * from book where b_id=" + b_id;
 	ResultSet rs = stmt.executeQuery(sql);
-
 	while (rs.next()) {
-		cart.addItem(rs.getString("b_id"), rs.getString("title"), 1,
-				rs.getString("price"));
+		if (Integer.parseInt(rs.getString("quantity")) == 0) {
+%><SCRIPT LANGUAGE="JavaScript">
+	alert("ขอภัย หนังสือหมด");
+	history.back();
+</script>
+<%
+	} else {
+			cart.addItem(rs.getString("b_id"), rs.getString("title"),
+					1, rs.getString("price"));
+			response.sendRedirect("cash_cheer_menu.jsp");
+		}
 	}
 	rs.close();
 	con.close();
-	response.sendRedirect("cash_cheer_menu.jsp");
 %>
