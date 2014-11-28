@@ -39,9 +39,9 @@
 		bordercolor="black" bgcolor="#E1EEEE">
 		<tr bgcolor="#79CDCD">
 			<td width="5%" align="center"><b>เลือก</b></td>
-			<td width="15%" align="center"><b>ISBN</b></td>
-			<td width="40%" align="center"><b>ชื่อหนังสือ</b></td>
-			<td width="15%" align="center"><b>จำนวน</b></td>
+			<td width="15%" align="center"><b>รหัสหนังสือ</b></td>
+			<td width="20%" align="center"><b>ชื่อหนังสือ</b></td>
+			<td width="15%" align="center"><b>จำนวนคงเหลือ</b></td>
 			<td width="15%" align="center"><b>จำนวน</b></td>
 			<td width="15%" align="center"><b>ราคา/หน่วย</b></td>
 			<td width="20%" align="center"><b>ราคารวม</b></td>
@@ -60,29 +60,29 @@
 					String sql = "select * from book where b_id=" + temp[0];
 					ResultSet rs = stmt.executeQuery(sql);
 
-					sum = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
-					//Integer.parseInt(rs.getString("quantity"))จำนวนที่เหลือ
+					int quantityB = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
 					while (rs.next()) {
 
-						if (sum < 1) {
+						if (quantityB < 1) {
 		%>
 		<script>
-								if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
-								}
-							</script>
-		<%
-			}
-
-						if (sum > Integer.parseInt(rs.getString("quantity"))) {
-		%>
-		<script>
-								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
-									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ซึ่งไม่เพียงพอในการขาย")) {
-			}
+			alert("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้");
 		</script>
 		<%
-			}
-						sum = sum * Float.parseFloat(temp[3]);
+			temp[2] = "1";
+						}
+
+						if (quantityB > Integer.parseInt(rs
+								.getString("quantity"))) {
+		%>
+		<script>
+		alert("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
+									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ไม่สามารถซื้อมากไปกว่านี้ได้");
+		</script>
+		<%
+			temp[2] = rs.getString("quantity");
+						}
+						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
 		%>
 		<tr>
@@ -91,13 +91,13 @@
 			<td align="center"><%=rs.getString("isbn")%></td>
 			<td><%=new String(temp[1].getBytes("ISO8859_1"),
 								"windows-874")%></td>
-			<td align="center"><%=rs.getString("quantity")%></td>
+			<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
 			<td><input name="<%=temp[0]%>" type="text" value="<%=temp[2]%>"
 				size="3" maxlength="3"><a
 				href="add_to_cart.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
 				href="reduce_to_car.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
-			<td align="center"><%=temp[3]%></td>
-			<td align="center"><%=sum%></td>
+			<td align="center"><%=temp[3]%> บาท</td>
+			<td align="center"><%=sum%> บาท</td>
 		</tr>
 		<%
 			}
@@ -109,7 +109,7 @@
 			<td colspan="3"><input name="del" type="submit"
 				value="ยกเลิกที่เลือก"></td>
 			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
-			<td align="center"><%=amount%></td>
+			<td align="center"><%=amount%> บาท</td>
 		</tr>
 		<tr>
 			<td colspan="7"><div align="center">
