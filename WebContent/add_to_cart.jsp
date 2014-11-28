@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=windows-874"%>
-<%@ page import="java.sql.*"%>
+<%@ page import="java.sql.*,java.util.*"%>
 <%@ include file="config.jsp"%>
 <jsp:useBean id="cart" class="ktpbook.ProductCart" scope="session" />
 <%
@@ -9,14 +9,19 @@
 	Statement stmt = con.createStatement();
 	String sql = "select * from book where b_id=" + b_id;
 	ResultSet rs = stmt.executeQuery(sql);
-	
-	int x = 1;
-	if (x > 0) {
-		while (rs.next()) {
+	while (rs.next()) {
+		if (Integer.parseInt(rs.getString("quantity")) == 0) {
+%><SCRIPT LANGUAGE="JavaScript">
+	alert("ขอภัย หนังสือหมด");
+	history.back();
+</script>
+<%
+	} else {
 			cart.addItem(rs.getString("b_id"), rs.getString("title"),
 					1, rs.getString("price"));
+			response.sendRedirect("view_cart.jsp");
 		}
 	}
 	rs.close();
-	response.sendRedirect("view_cart.jsp");
+	con.close();
 %>
