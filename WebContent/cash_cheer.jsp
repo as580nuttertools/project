@@ -92,6 +92,8 @@
 			href="add_to_cash_cheer.jsp?b_id=<%=rs.getString("b_id")%>"
 			class=Button>ซื้อ</a></td>
 	</tr>
+
+
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
@@ -123,8 +125,8 @@
 </form>
 <%
 	} catch (Exception e) {
-		out.println("ไม่มีหนังสือ");
-%>
+		out.println("<center>ไม่มีหนังสือ</center>");
+%><br>
 </table>
 <%
 	}
@@ -159,8 +161,8 @@
 		<tr bgcolor="#79CDCD">
 			<td width="5%" align="center"><b>เลือก</b></td>
 			<td width="15%" align="center"><b>รหัสหนังสือ</b></td>
-			<td width="40%" align="center"><b>ชื่อหนังสือ</b></td>
-			<td width="15%" align="center"><b>จำนวน</b></td>
+			<td width="20%" align="center"><b>ชื่อหนังสือ</b></td>
+			<td width="15%" align="center"><b>จำนวนคงเหลือ</b></td>
 			<td width="15%" align="center"><b>จำนวน</b></td>
 			<td width="15%" align="center"><b>ราคา/หน่วย</b></td>
 			<td width="20%" align="center"><b>ราคารวม</b></td>
@@ -186,22 +188,22 @@
 						if (quantityB < 1) {
 		%>
 		<script>
-								if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
-								}
+		alert("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้");
 							</script>
 		<%
-			}
+			temp[2] = "1";
+						}
 
 						if (quantityB > Integer.parseInt(rs
 								.getString("quantity"))) {
 		%>
 		<script>
-								if (confirm("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
-									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ซึ่งไม่เพียงพอในการขาย")) {
-			}
+		alert("หนังสือการ์ตูนเรื่อง <%=new String(temp[1].getBytes("ISO8859_1"),
+									"windows-874")%> เหลืออยู่จำนวน <%=rs.getString("quantity")%> เล่ม ไม่สามารถซื้อมากไปกว่านี้ได้");
 		</script>
 		<%
-			}
+			temp[2] = rs.getString("quantity");
+						}
 						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
 		%>
@@ -217,7 +219,7 @@
 				href="add_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">เพิ่ม</a><a
 				href="reduce_to_cash_cheer.jsp?b_id=<%=temp[0]%>" class="button">ลด</a></td>
 			<td align="center"><%=temp[3]%> บาท</td>
-			<td align="center"><%=sum%></td>
+			<td align="center"><%=sum%> บาท</td>
 		</tr>
 		<%
 			}
@@ -227,7 +229,7 @@
 			<td colspan="3"><input name="del" type="submit"
 				value="ยกเลิกที่เลือก"></td>
 			<td colspan="3" align="right"><b>ราคารวมทั้งหมด</b></td>
-			<td align="center"><%=amount%></td>
+			<td align="center"><%=amount%> บาท</td>
 		</tr>
 		<%
 			String receive = "0";
@@ -239,7 +241,7 @@
 						receiveS = request.getParameter("receive");
 						receiveI = Float.parseFloat(receiveS);
 						receiveI = receiveI - amount;
-						
+
 						if (Integer.parseInt(receive) <= 0) {
 							receive = "0";
 						}
@@ -286,9 +288,14 @@
 </form>
 <%
 	} else {
-%>
+%><br>
+<center>ยังไม่มีหนังสือในรถเข็น</center>
 <br>
 <%
 	}
 %>
 <br>
+<%
+	rs.close();
+	con.close();
+%>
