@@ -10,12 +10,11 @@
 	Statement stmt = con.createStatement();
 	String sql;
 	ResultSet rs = null;
-	try {
 
-		String keyword = "";
-		if (request.getParameter("keyword") != null) {
-			keyword = request.getParameter("keyword");
-		}
+	String keyword = "";
+	if (request.getParameter("keyword") != null) {
+		keyword = request.getParameter("keyword");
+	}
 %>
 <br>
 <form name="frmSearch" method="post" action="cash_cheer_menu.jsp">
@@ -29,47 +28,47 @@
 </form>
 <%
 	//ตรวจสอบค่าปุ่มที่กด
-		String action = "";
-		if (request.getParameter("bFirst") != "1") {
-			action = "first";
+	String action = "";
+	if (request.getParameter("bFirst") != "1") {
+		action = "first";
+	}
+	if (request.getParameter("bPrevious") != null) {
+		action = "previous";
+	}
+	if (request.getParameter("bNext") != null) {
+		action = "next";
+	}
+	if (request.getParameter("bLast") != null) {
+		action = "last";
+	}
+	if (request.getParameter("bPageNo") != null) {
+		//ดักจับข้อผิดพลาดค่าของ pageNo ว่าเป็นตัวเลขหรือไม่
+		try {
+			pa.setPageNo(Integer.parseInt(request
+					.getParameter("pageNo")));
+			action = "pageNo";
+		} catch (NumberFormatException e) {
 		}
-		if (request.getParameter("bPrevious") != null) {
-			action = "previous";
-		}
-		if (request.getParameter("bNext") != null) {
-			action = "next";
-		}
-		if (request.getParameter("bLast") != null) {
-			action = "last";
-		}
-		if (request.getParameter("bPageNo") != null) {
-			//ดักจับข้อผิดพลาดค่าของ pageNo ว่าเป็นตัวเลขหรือไม่
-			try {
-				pa.setPageNo(Integer.parseInt(request
-						.getParameter("pageNo")));
-				action = "pageNo";
-			} catch (NumberFormatException e) {
-			}
-		}
+	}
 
-		int totalRow = 0;
-		//หาจำนวนหนังสือ
-		sql = "select  count(*) as totalRow from book WHERE title like '%"
-				+ keyword + "%' or isbn like '%" + keyword + "%'";
-		rs = stmt.executeQuery(sql);
-		while (rs.next()) {
-			totalRow = rs.getInt("totalRow");
-		}
-		rs.close();
-		//กำหนดค่าต่างๆ ใน bean
-		pa.setTotalRow(totalRow);
-		pa.actionPage(action, 5);
-		// แสดงหนังสือตามค่าที่กำหนด
-		sql = "SELECT * FROM book WHERE title like '%" + keyword
-				+ "%' or isbn like '%" + keyword + "%' order by isbn";
-		rs = stmt.executeQuery(sql);
-		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
-		con.close();
+	int totalRow = 0;
+	//หาจำนวนหนังสือ
+	sql = "select  count(*) as totalRow from book WHERE title like '%"
+			+ keyword + "%' or isbn like '%" + keyword + "%'";
+	rs = stmt.executeQuery(sql);
+	while (rs.next()) {
+		totalRow = rs.getInt("totalRow");
+	}
+	rs.close();
+	//กำหนดค่าต่างๆ ใน bean
+	pa.setTotalRow(totalRow);
+	pa.actionPage(action, 5);
+	// แสดงหนังสือตามค่าที่กำหนด
+	sql = "SELECT * FROM book WHERE title like '%" + keyword
+			+ "%' or isbn like '%" + keyword + "%' order by isbn";
+	rs = stmt.executeQuery(sql);
+	rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
+	con.close();
 %>
 <table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
@@ -81,7 +80,8 @@
 
 	</tr>
 	<%
-		do {
+		try {
+			do {
 	%>
 	<tr>
 		<td align="center"><%=rs.getString("isbn")%></td>
@@ -125,8 +125,8 @@
 </form>
 <%
 	} catch (Exception e) {
-		out.println("<center>ไม่มีหนังสือ</center>");
-%><br>
+		out.println("<center>ไม่พบหนังสือ  " + keyword + "</center>");
+%>
 </table>
 <%
 	}
