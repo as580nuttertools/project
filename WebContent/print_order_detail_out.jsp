@@ -4,22 +4,14 @@
 <%@ include file="m_date.jsp"%>
 <jsp:useBean id="cart" class="ktpbook.ProductCart" scope="session" />
 <%
-	String[] temp;
-	if (request.getParameter("cal") != null) {
-		Enumeration e = cart.getItem();
-		while (e.hasMoreElements()) {
-			temp = (String[]) e.nextElement();
-			cart.setQuantity(temp[0], request.getParameter(temp[0]));
-		}
-	}
-	if (request.getParameter("buy") != null) {
-		response.sendRedirect("product.jsp");
-	}
-	if (request.getParameter("ok") != null) {
-		response.sendRedirect("confirm_pay_cash_cheer.jsp");
-	}
-	if (cart.getItem().hasMoreElements()) {
-%><br>
+	String order_id = request.getParameter("order_id");
+	Class.forName(driver);
+	Connection con = DriverManager.getConnection(url, user, pw);
+	Statement stmt = con.createStatement();
+	String sql = "";
+	ResultSet rs = null;
+%>
+<br>
 <table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
 	<tr>
@@ -42,9 +34,8 @@
 		<td colspan="5"><input type="checkbox" name="v1">
 			ส่งของพร้อมเก็บเงินสด <br> <input type="checkbox" name="v1">
 			ส่งของพร้อมรับเช็ค<br> <input type="checkbox" name="v1">
-			โอนเงินผ่านธนาคาร<br>
-		<input type="checkbox" name="v1"> ส่งของพร้อมรับเช็ค
-			(กรุณาแฟกซ์สำเนาใบโอนเงินพร้อมใบสั่งซื้อ)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+			โอนเงินผ่านธนาคาร<br> <input type="checkbox" name="v1">
+			ส่งของพร้อมรับเช็ค (กรุณาแฟกซ์สำเนาใบโอนเงินพร้อมใบสั่งซื้อ)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
 			type="checkbox" name="v1"> กรุงเทพ ชื่อบัญชี บริษัท สยามบุค
 			จำกัด สาขา พลับพลาไชย กระแสรายวัน 002-3-26756-2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
 			type="checkbox" name="v1"> กสิกรไทย ชื่อบัญชี บริษัท สยามบุค
@@ -58,42 +49,28 @@
 		<td width="20%" align="center"><b>ราคารวม</b></td>
 	</tr>
 	<%
-		Enumeration enu = cart.getItem();
+			sql = "select * from order_items,book where book.b_id=order_items.b_id and order_id='"
+					+ order_id + "'";
+			rs = stmt.executeQuery(sql);
 			float sum = 0;
 			float amount = 0;
-			//นำหนังสือที่อยู่ใน bean ออกมาแสดง
-			while (enu.hasMoreElements()) {
-				temp = (String[]) enu.nextElement();
-
-				Class.forName(driver);
-				Connection con = DriverManager.getConnection(url, user, pw);
-				Statement stmt = con.createStatement();
-				String sql = "select * from book where b_id=" + temp[0];
-				ResultSet rs = stmt.executeQuery(sql);
-
-				sum = Integer.parseInt(temp[2]);//จำนวนที่จะซื้อ
-				//rs.getInt("quantity")จำนวนที่เหลือ
-				while (rs.next()) {
-					if (sum < 1) {
-						response.sendRedirect("order_book_menu.jsp");
-					}
-					sum = sum * Float.parseFloat(temp[3]);
-					amount += sum;
-	%>
+			while (rs.next()) {
+				sum = rs.getInt("item_price") * rs.getInt("quantity");
+				amount += sum;
+		%>
 	<tr>
-		<td align="center"><%=rs.getString("isbn")%></td>
-		<td><%=new String(temp[1].getBytes("ISO8859_1"),
-								"windows-874")%></td>
-		<td align="center"><%=temp[2]%></td>
-		<td align="center"><%=temp[3]%></td>
-		<td align="center"><%=sum%></td>
-	</tr>
+			<td align="center"><%=rs.getString("ISBN")%></td>
+			<td><%=new String(rs.getString("title")
+						.getBytes("ISO8859_1"), "windows-874")%></td>
+			<td align="center"><%=rs.getString("item_price")%> บาท</td>
+			<td align="center"><%=rs.getString("quantity")%> เล่ม</td>
+			<td align="center"><%=sum%> บาท</td>
+		</tr>
 	<%
-		}
-				rs.close();
-				con.close();
 			}
-	%>
+			rs.close();
+			con.close();
+		%>
 	<tr>
 		<td colspan="4" align="right"><b>ราคารวมทั้งหมด</b></td>
 		<td align="center"><%=amount%></td>
@@ -112,7 +89,9 @@
 	</tr>
 </table>
 <b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลงชื่อผู้สั่งซื้อ</b>
-<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;........................................
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;........................................
 <table width="70%" align="center" cellspacing="0" align="center">
 	<tr align="center">
 		<td colspan="2"><input name="print" type="button" id="print"
@@ -122,6 +101,5 @@
 </table>
 </form>
 <%
-	}
 	cart.close();
 %>
