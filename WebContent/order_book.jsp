@@ -10,9 +10,9 @@
 	Statement stmt = con.createStatement();
 	String sql;
 	ResultSet rs = null;
-	try {
 
-		String keyword = "";
+	String keyword = "";
+	try {
 		if (request.getParameter("keyword") != null) {
 			keyword = request.getParameter("keyword");
 		}
@@ -54,9 +54,7 @@
 
 		int totalRow = 0;
 		//หาจำนวนหนังสือ
-		sql = "select  count(*) as totalRow FROM book WHERE quantity < 5 and title like '%"
-				+ keyword + "%' and isbn like '%" + keyword
-				+ "%' order by isbn";
+		sql = "select  count(*) as totalRow FROM book WHERE quantity < 5 ";
 		rs = stmt.executeQuery(sql);
 		while (rs.next()) {
 			totalRow = rs.getInt("totalRow");
@@ -67,12 +65,19 @@
 		pa.actionPage(action, 5);
 		// แสดงหนังสือตามค่าที่กำหนด
 		sql = "SELECT * FROM book WHERE quantity <= 5 and title like '%"
-				+ keyword + "%' and isbn like '%" + keyword
+				+ keyword
+				+ "%' and isbn like '%"
+				+ keyword
 				+ "%' order by isbn";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
 %>
+<%
+	out.println("<center>รายการสั่งซื้อทั้งหมด " + totalRow
+			+ " รายการ</center>");
+%>
+<br>
 <table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
 	<tr bgcolor="#79CDCD">
@@ -96,8 +101,8 @@
 	<%
 		} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
-
 </table>
+<br>
 <form name="form1" method="post"
 	action="order_book_menu.jsp?keyword=<%=keyword%>">
 	<table width="90%" border="1" align="center" cellspacing="0"
@@ -125,7 +130,7 @@
 </form>
 <%
 	} catch (Exception e) {
-		out.println("ไม่มีหนังสือ");
+		out.println("<center>ไม่พบหนังสือ  " + keyword + "</center>");
 %>
 </table>
 <%
@@ -188,12 +193,11 @@
 						if (quantityB < 1) {
 		%>
 		<script>
-			if (confirm("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้")) {
-			}
+			alert("ไม่สามารถซื้อหนังสือจำนวนกว่า1เล่มได้");
 		</script>
 		<%
-			}
-
+			temp[2] = "1";
+						}
 						sum = quantityB * Float.parseFloat(temp[3]);
 						amount += sum;
 						sum = ((sum * 7) / 100) + sum;
