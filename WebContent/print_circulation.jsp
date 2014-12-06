@@ -2,14 +2,16 @@
 <%@ page import="java.sql.*,java.util.*"%>
 <%@ include file="config.jsp"%>
 <%@ include file="m_date.jsp"%>
+<jsp:include page="footer.jsp" />
 <jsp:useBean id="pa" class="ktpbook.PageBean" scope="session" />
 <%
+	String keyword = request.getParameter("keyword");
 	Class.forName(driver);
 	Connection con = DriverManager.getConnection(url, user, pw);
 	Statement stmt = con.createStatement();
 	String sql;
 	ResultSet rs = null;
-	int sum,amount = 0;
+	int sum, amount = 0;
 	try {
 %>
 <br>
@@ -17,7 +19,15 @@
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#79CDCD">
 		<tr align="center">
-			<td><b>ยอดขาย</b></td>
+			<%
+				if (keyword == "") {
+			%><td><b>ยอดขายทั้งหมด</b></td>
+			<%
+				} else {
+			%><td><b>ยอดขายในปี <%=keyword%></b></td>
+			<%
+				}
+			%>
 		</tr>
 	</table>
 </form>
@@ -48,7 +58,9 @@
 
 		int totalRow = 0;
 		//หาจำนวนหนังสือ
-		sql = "select  count(*) as totalRow from book WHERE title like '%%' or isbn like '%%'";
+		sql = "select count(*) as totalRow FROM orders,order_items,book where orders.date like '%"
+				+ keyword
+				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 group by book.title ";
 		rs = stmt.executeQuery(sql);
 		while (rs.next()) {
 			totalRow = rs.getInt("totalRow");
@@ -58,7 +70,9 @@
 		pa.setTotalRow(totalRow);
 		pa.actionPage(action, 100);
 		// แสดงหนังสือตามค่าที่กำหนด
-		sql = "SELECT * FROM book WHERE title like '%%' or isbn like '%%' order by isbn";
+		sql = "SELECT * FROM orders,order_items,book where orders.date like '%"
+				+ keyword
+				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 group by book.title ";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
@@ -80,18 +94,17 @@
 	<td align="center"><%=rs.getString("isbn")%></td>
 	<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-	<td align="center"><%=rs.getString("price")%> บาท</td>
-	<td align="center"><%=rs.getString("score")%> เล่ม</td>
+	<td align="center"><%=rs.getString("book.price")%> บาท</td>
+	<td align="center"><%=rs.getString("book.score")%> เล่ม</td>
 	<%
-		sum = rs.getInt("price") * rs.getInt("score");
+		sum = rs.getInt("book.score") * rs.getInt("book.price");
 	%>
-	<td align="center"><%=sum%>
-		บาท</td>
+	<td align="center"><%=sum%> บาท</td>
 	</tr>
 
 
 	<%
-	amount = amount + sum;
+		amount = amount + sum;
 			} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
 
@@ -100,13 +113,14 @@
 		<td align="center"><%=amount%> บาท</td>
 	</tr>
 	<tr>
-		<td colspan="5"><div align="center">
-				<input name="print_detail" type="button"
-					onClick="MM_openBrWindow('print_circulation.jsp','','width=650,height=500')"
-					value="พิมพ์ใบสั่งซื้อ">
+		<td colspan="5"><br>
+			<div align="center">
+				<input name="print" type="button" id="print"
+					onClick="window.print()" value=" พิมพ์ "> <input
+					name="close" type="button" id="close2" onClick="window.close()"
+					value="ปิด  ">
 			</div></td>
 	</tr>
-
 </table>
 <%
 	} catch (Exception e) {
@@ -115,4 +129,3 @@
 	rs.close();
 	con.close();
 %>
-<jsp:include page="footer.jsp" />
