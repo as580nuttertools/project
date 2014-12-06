@@ -60,7 +60,7 @@
 		//หาจำนวนหนังสือ
 		sql = "select count(*) as totalRow FROM orders,order_items,book where orders.date like '%"
 				+ keyword
-				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 group by book.title ";
+				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 and orders.status=3 group by book.title ";
 		rs = stmt.executeQuery(sql);
 		while (rs.next()) {
 			totalRow = rs.getInt("totalRow");
@@ -72,7 +72,7 @@
 		// แสดงหนังสือตามค่าที่กำหนด
 		sql = "SELECT * FROM orders,order_items,book where orders.date like '%"
 				+ keyword
-				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 group by book.title ";
+				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 and orders.status=3 group by book.title ";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
