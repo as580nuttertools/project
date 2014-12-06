@@ -14,9 +14,8 @@
 	Statement stmt = con.createStatement();
 	String sql;
 	ResultSet rs = null;
+	String keyword = "";
 	try {
-
-		String keyword = "";
 		if (request.getParameter("keyword") != null) {
 			keyword = request.getParameter("keyword");
 		}
@@ -26,11 +25,34 @@
 	<table width="90%" border="1" align="center" cellspacing="0"
 		bordercolor="black" bgcolor="#79CDCD">
 		<tr align="center">
-			<td><b>ค้นหา</b> <input name="keyword" type="text" id="keyword"
-				value="<%=keyword%>"> <input type="submit" value="ค้นหา"></td>
+			<td><b>ค้นหา</b> <select name="keyword" id="keyword">
+					<option value="2020" selected>2020</option>
+					<option value="2019" selected>2019</option>
+					<option value="2018" selected>2018</option>
+					<option value="2017" selected>2017</option>
+					<option value="2016" selected>2016</option>
+					<option value="2015" selected>2015</option>
+					<option value="2014" selected>2014</option>
+					<option value="" selected>เลือกปีที่จะแสดง</option>
+			</select> <input type="submit" value="ค้นหา"></td>
 		</tr>
 	</table>
 </form>
+	<table width="90%" border="1" align="center" cellspacing="0"
+		bordercolor="black" bgcolor="#79CDCD">
+		<tr align="center">
+		<%
+				if (keyword == "") {
+			%><td><b>ยอดขายทั้งหมด</b></td>
+			<%
+				} else {
+			%><td><b>ยอดขายในปี <%=keyword%></b></td>
+			<%
+				}
+			%>
+		</tr>
+	</table>
+	<br>
 <%
 	//ตรวจสอบค่าปุ่มที่กด
 		String action = "";
@@ -58,8 +80,9 @@
 
 		int totalRow = 0;
 		//หาจำนวนหนังสือ
-		sql = "select  count(*) as totalRow from book WHERE title like '%"
-				+ keyword + "%' or isbn like '%" + keyword + "%'";
+		sql = "select count(*) as totalRow FROM orders,order_items,book where orders.date like '%"
+				+ keyword
+				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 group by book.title ";
 		rs = stmt.executeQuery(sql);
 		while (rs.next()) {
 			totalRow = rs.getInt("totalRow");
@@ -69,13 +92,13 @@
 		pa.setTotalRow(totalRow);
 		pa.actionPage(action, 10);
 		// แสดงหนังสือตามค่าที่กำหนด
-		sql = "SELECT * FROM book WHERE title like '%" + keyword
-				+ "%' or isbn like '%" + keyword
-				+ "%' order by score desc";
+		sql = "SELECT * FROM orders,order_items,book where orders.date like '%"
+				+ keyword
+				+ "%' and order_items.order_id=orders.order_id and order_items.b_id=book.b_id and book.score>0 group by book.title ";
 		rs = stmt.executeQuery(sql);
 		rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 		con.close();
-		int sum,amount = 0;
+		int sum, amount = 0;
 %>
 <table width="90%" border="1" align="center" cellspacing="0"
 	bordercolor="black" bgcolor="#E1EEEE">
@@ -90,22 +113,18 @@
 	</tr>
 	<%
 		do {
-	%>
-	<td align="center"><%=rs.getString("isbn")%></td>
+	%><td align="center"><%=rs.getString("isbn")%></td>
 	<td><%=new String(rs.getString("title").getBytes(
 							"ISO8859_1"), "windows-874")%></td>
-	<td align="center"><%=rs.getString("price")%> บาท</td>
-	<td align="center"><%=rs.getString("score")%> เล่ม</td>
+	<td align="center"><%=rs.getString("book.price")%> บาท</td>
+	<td align="center"><%=rs.getString("book.score")%> เล่ม</td>
 	<%
-		sum = rs.getInt("price") * rs.getInt("score");
+		sum = rs.getInt("book.score") * rs.getInt("book.price");
 	%>
-	<td align="center"><%=sum%>
-		บาท</td>
+	<td align="center"><%=sum%> บาท</td>
 	</tr>
-
-
 	<%
-	amount = amount + sum;
+		amount = amount + sum;
 			} while (rs.next() && rs.getRow() <= pa.getEndRow());
 	%>
 
@@ -116,7 +135,7 @@
 	<tr>
 		<td colspan="5"><div align="center">
 				<input name="print_detail" type="button"
-					onClick="MM_openBrWindow('print_circulation.jsp','','width=650,height=500')"
+					onClick="MM_openBrWindow('print_circulation.jsp?keyword=<%=keyword%>','','width=650,height=500')"
 					value="พิมพ์ใบสั่งซื้อ">
 			</div></td>
 	</tr>
@@ -150,7 +169,7 @@
 </form>
 <%
 	} catch (Exception e) {
-		out.println("ไม่มีหนังสือ");
+		out.println("ไม่มียอดขายในปี " + keyword);
 	}
 	rs.close();
 	con.close();
