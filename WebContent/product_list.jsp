@@ -13,6 +13,10 @@
 	if (request.getParameter("keyword") != null) {
 		keyword = request.getParameter("keyword");
 	}
+	String bt_id = "";
+	if (request.getParameter("bt_id") != null) {
+		bt_id = request.getParameter("bt_id");
+	}
 %>
 <br>
 <form name="frmSearch" method="post" action="product.jsp">
@@ -20,7 +24,23 @@
 		bordercolor="black" bgcolor="#79CDCD">
 		<tr align="center">
 			<td><b>ค้นหา</b> <input name="keyword" type="text" id="keyword"
-				value="<%=keyword%>"> <input type="submit" value="ค้นหา"></td>
+				value="<%=keyword%>"> <select name="bt_id">
+					<option value="">ทุกประเถท</option>
+					<%
+						sql = "select * from booktype";
+							rs = stmt.executeQuery(sql);
+							while (rs.next()) {
+					%>
+					<option value="<%=rs.getString("bt_id")%>"
+						<%if (rs.getString("bt_id").equals(bt_id)) {
+						out.println("selected");
+					}%>><%=new String(rs.getString("name").getBytes(
+							"ISO8859_1"), "windows-874")%></option>
+					<%
+						}
+							rs.close();
+					%>
+			</select><input type="submit" value="ค้นหา"></td>
 		</tr>
 	</table>
 </form>
@@ -51,8 +71,7 @@
 
 	int totalRow = 0;
 	//หาจำนวนหนังสือ
-	sql = "select  count(*) as totalRow from book WHERE title like '%"
-			+ keyword + "%' or author like '%" + keyword + "%'";
+		sql = "select  count(*) as totalRow FROM book WHERE bt_id like '%" + bt_id + "%' and title like '%" + keyword + "%' or  bt_id like '%" + bt_id + "%' and author like '%" + keyword + "%'  order by isbn";
 	rs = stmt.executeQuery(sql);
 	while (rs.next()) {
 		totalRow = rs.getInt("totalRow");
@@ -62,8 +81,7 @@
 	pa.setTotalRow(totalRow);
 	pa.actionPage(action, 5);
 	// แสดงหนังสือตามค่าที่กำหนด
-	sql = "SELECT * FROM book WHERE title like '%" + keyword
-			+ "%' or author like '%" + keyword + "%' order by isbn";
+	sql = "SELECT * FROM book WHERE bt_id like '%" + bt_id + "%' and title like '%" + keyword + "%' or  bt_id like '%" + bt_id + "%' and author like '%" + keyword + "%'  order by isbn";
 	rs = stmt.executeQuery(sql);
 	rs.absolute(pa.getStartRow()); //กำหนดแถวค่าแรกที่แสดง
 	con.close();
@@ -104,7 +122,7 @@
 			<%
 				if (session.getAttribute("j_fname") != null) {
 							if (session.getAttribute("status").equals("customer")) {
-			%> <a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>"
+			%> <a href="add_to_cart.jsp?b_id=<%=rs.getString("b_id")%>&bt_id=<%=bt_id%>"
 			class=Button>หยิบใส่รถเข็น</a> <%
  	}
  			}
